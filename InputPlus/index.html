@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <table>
+      <tr>
+        <td id = "date">
+
+        </td>
+        <td id = "debit-acc">
+
+        </td>
+        <td id = "debit">
+
+          </td>
+        </tr>
+        <tr>
+          <td>
+
+            </td>
+          <td id = "credit-acc">
+
+            </td>
+            <td id = "credit">
+
+              </td>
+          </tr>
+          <tr>
+            <td colspan = "3" id = "description">
+
+              </td>
+            </tr>
+      </table>
+
+  </body>
+  <script type="module">
+    import {TextInput, TextField} from "./input.js";
+    function dateFormat(date){
+      let d = new Date(date);
+      d = (""+d).split(" ");
+      return `${d[2]} ${d[1]} ${d[3]}`;
+    }
+
+    let inputs = {};
+    for (let key of ["credit", "debit", "date", "credit-acc", "debit-acc", "description"]) {
+      let input = new TextField(key);
+      inputs[key] = input;
+      input.placeholder = key;
+    }
+
+    inputs["debit"].input.type = "number";
+    inputs["date"].input.type = "date";
+    inputs["date"].validate = (v) => {
+      console.log(v);
+      let valid = true;
+      if (v.length > 0) {
+        if (Number.isNaN((new Date(v)).getTime())) {
+          valid = false;
+          inputs["date"].placeholder = "date"
+        }else {
+          valid = true;
+          inputs["date"].placeholder = `date: <span style = "font-size: 0.7em; transform: scale(2);">${dateFormat(new Date(v))}</span>`;
+        }
+      }else{
+        inputs["date"].placeholder = "date"
+      }
+
+      return valid;
+    }
+
+
+
+
+
+  </script>
+  <style>
+    body {
+      font-family: "Supreme LL TT";
+      font-size: 4.3vw;
+      --scale: 0.5;
+      margin: 1em;
+    }
+    table {
+      width: 100%;
+      border-spacing: 0;
+    }
+    tr td:first-of-type {
+      width: 20%;
+    }
+    tr td:last-of-type {
+      width: 20%;
+    }
+    table tr:nth-of-type(2) td{
+      padding-top: 0.2em;
+      padding-left: 1em;
+    }
+    /* #description .placeholder {
+      transform: translate(0, -.5em);
+    } */
+    #description  {
+      padding-top: 0.2em;
+
+      /* padding-top: 0.5em; */
+      /* margin: 0.2em 0; */
+      /* font-size: 0.8em; */
+    }
+    td {
+      width: 35%;
+    }
+    [contenteditable] {
+      outline: none;
+    }
+    .text-field {
+      /* margin-top: 0.6em; */
+      padding-bottom: 0.1em;
+      border-bottom: 2px solid black;
+    }
+    .suggestion{
+      opacity: 0.5;
+    }
+    .placeholder {
+      overflow: hidden;
+      font-size: 1em;
+    }
+    .invalid .placeholder {
+      color: red;
+    }
+    .text-field > div {
+      margin-top: 0.6em;
+    }
+    .input {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* .text-field .placeholder {
+      transition: cubic-bezier(0.45, 0, 0.55, 1) 0.5s;
+    } */
+    #test {
+      transition: ease 0.3s;
+    }
+    #test.edit {
+      background: black;
+      color: white;
+    }
+  </style>
+</html>

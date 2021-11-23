@@ -1,0 +1,40 @@
+
+.journal {
+  border-spacing: 0;
+}
+.entry td{
+  padding-bottom: 0.25em;
+}
+.entry .value{
+  width: 5%;
+}
+
+.entry .description{
+  font-style: italic;
+}
+.entry .account{
+  padding-right: 0.5em;
+  border-right: 2px solid black;
+}
+.entry .description{
+  color: rgb(125,125,122);
+  border-top: 2px solid black;
+}
+.entry .details td:first-of-type {
+  border-top: 2px solid white;
+}
+.entry .details td{
+  padding-bottom: 2em;
+  /* padding-top: 0.25em; */
+}
+.entry .date{
+  font-weight: normal;
+  padding-right: 2em;
+}
+
+.entry .debit .value, .debit-title{
+  padding-left: 0.5em;
+}
+.entry .credit .account{
+  padding-left: 1em;
+}

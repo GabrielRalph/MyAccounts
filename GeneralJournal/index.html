@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <link href = "https://arcms.w4v.es/Assets/Supreme/stylesheet.css" rel="stylesheet" />
+  <link href = "./gj-styles.css" rel="stylesheet" />
+  <link href = "../InputPlus/input.css" rel="stylesheet" />
+  <body>
+    <div id = control-bar>
+      <span id = sign-in>
+        Loading
+      </span>
+      <span id = open-filter style = "display:none;">FILTERS</span>
+      <span id = add-entry style = "display:none;">
+      </span>
+    </div>
+    <div id = journal>
+
+    </div>
+    <div id = form>
+
+    </div>
+    <div id = filters>
+      <div>
+        <div id = date-from>
+
+        </div>
+        <div id = date-to>
+
+        </div>
+      </div>
+
+      <div>
+        <div id = credit-acc-filter>
+
+        </div>
+        <div id = debit-acc-filter>
+
+        </div>
+      </div>
+
+      <div>
+        <div id = min-trans>
+
+        </div>
+        <div id = max-trans>
+
+        </div>
+      </div>
+    </div>
+
+  </body>
+
+  <style>
+  @import url('https://fonts.googleapis.com/css2?family=Cutive+Mono&display=swap');
+    body{
+      font-family: 'Cutive Mono', monospace;
+      margin: 2em;
+      font-size: 3vmin;
+      overflow: hidden;
+    }
+    #open-filter {
+    }
+
+    .mobile #control-bar {
+      bottom: 0;
+      font-size: 1.5em;
+    }
+    body:not(.mobile) #control-bar {
+      top: 0;
+      font-size: 1em;
+    }
+
+    #control-bar {
+      position: fixed;
+      left: 0;
+      right: 0;
+      padding: 0.5em;
+      background: #fff8;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      /* color: white; */
+      /* fill: white; */
+      z-index: 2;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+    }
+    #control-bar span {
+      display: flex;
+      align-items: center;
+      /* box-shadow: 0px 0px 4px 4px #fff5; */
+      border-radius: 3em;
+      padding: 0.2em 0.4em;
+      /* background: #fff9; */
+      /* line-height: 100%; */
+    }
+
+
+    #sign-in {
+      cursor: pointer;
+    }
+
+    #journal {
+      z-index: 1;
+    }
+    #journal, #form{
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      overflow-y: scroll;
+      padding: calc(2em + (100vw - 100vmin) / 2.25);
+      padding-bottom: 6em;
+      padding-top: 2em;
+    }
+
+    #form {
+      background: #fff2;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      transition: 0.4s cubic-bezier(0.4, 0, 0.6, 1) opacity;
+      opacity: 0;
+      pointer-events: none;
+      padding: 2em;
+      z-index: 3;
+    }
+    .mobile #form {
+      font-size: max(1em, 42px);
+    }
+
+
+    .icon {
+      height: 1em;
+      cursor: pointer;
+      vertical-align: middle;
+      border-radius: 1em;
+    }
+
+
+    #form .icon {
+      height: 2em;
+      margin-top: 2em;
+    }
+
+    #form .icon:nth-of-type(2n + 1){
+      float: right;
+      margin-left: 1.5em;
+    }
+    .placeholder p {
+      display: inline;
+    }
+    .entry-form {
+      width: 100%;
+    }
+    .entry-form tr td:nth-of-type(2) {
+      width: 20%;
+    }
+    .entry-form td {
+      padding-top: 1em;
+    }
+  </style>
+  <script src = "app.js" type = "module">
+
+
+  </script>
+</html>
