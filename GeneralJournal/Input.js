@@ -1,9 +1,5 @@
 import {SvgPlus} from "../3.5.js";
-import {Words} from "./words.js";
-//
-// window.onerror = () => {
-//   alert("err")
-// }
+
 function setCarrot(el, pos){
   var range = document.createRange()
   var sel = window.getSelection()
