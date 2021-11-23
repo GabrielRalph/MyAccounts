@@ -81,8 +81,6 @@
       background: #fff8;
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
-      /* color: white; */
-      /* fill: white; */
       z-index: 2;
       display: flex;
       flex-direction: row;
@@ -91,11 +89,8 @@
     #control-bar span {
       display: flex;
       align-items: center;
-      /* box-shadow: 0px 0px 4px 4px #fff5; */
       border-radius: 3em;
       padding: 0.2em 0.4em;
-      /* background: #fff9; */
-      /* line-height: 100%; */
     }
 
 
@@ -116,6 +111,15 @@
       padding: calc(2em + (100vw - 100vmin) / 2.25);
       padding-bottom: 6em;
       padding-top: 2em;
+    }
+
+    .mobile #journal {
+      padding-bottom: 6em;
+      padding-top: 2em;
+    }
+    body:not(.mobile) #journal {
+      padding-bottom: 2em;
+      padding-top: 4em;
     }
 
     #form {
