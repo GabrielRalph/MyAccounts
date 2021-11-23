@@ -1,5 +1,5 @@
 import {SvgPlus} from "../3.5.js"
-import {TextField} from "./input.js"
+import {TextField} from "../InputPlus/inputPlus.js"
 import {Icon} from "../SvgPlus/Icons.js"
 import {TBody, Tr, Td} from "../SvgPlus/Table.js"
 import {makeProps} from "../SvgPlus/props.js"
