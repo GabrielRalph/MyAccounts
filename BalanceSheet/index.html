@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <div class = "row">
+      <table>
+        <thead>
+          <tr><td colspan = 2>ASSETS</td></tr>
+        </thead>
+        <tbody>
+          <tr class = "sub"><th colspan = 2>Current Assets</th></tr>
+        </tbody>
+        <tbody id = "current-assets">
+        </tbody>
+        <tbody class = "total">
+          <tr><td>Total Current Assets</td><td id = "total-current-assets"></td></tr>
+        </tbody>
+        <tbody>
+          <tr class = "sub"><th colspan = 2>Noncurrent Assets</th></tr>
+        </tbody>
+        <tbody id = "noncurrent-assets">
+        </tbody>
+        <tbody class = "total">
+          <tr><td>Total Noncurrent Assets</td><td id = "total-noncurrent-assets"></td></tr>
+          <tr><td>Total Assets</td><td id = "total-assets"></td></tr>
+        </<tbody>
+      </table>
+
+
+        <table>
+          <!-- <thead>
+            <tr><td colspan = 2>LIABILITIES</td></tr>
+          </thead>
+          <tbody>
+            <tr class = "sub"><th colspan = 2>Current Liabilities</th></tr>
+          </tbody>
+          <tbody id = "current-liabilities">
+          </tbody>
+          <tbody class = "total">
+            <tr><td>Total Current Liabilities</td><td id = "total-current-liabilities"></td></tr>
+            <tr><td>Total Assets</td><td id = "total-liabilities"></td></tr>
+          </<tbody>
+        </table> -->
+
+        <table>
+          <thead>
+            <tr><th colspan = 2>Owners Equity</th></tr>
+          </thead>
+          <tbody id = "equity">
+          </tbody>
+          <tbody class = "total">
+            <tr><td>Total Owners Equity</td><td id = "total-equity"></td></tr>
+          </<tbody>
+        </table>
+      </div>
+  </body>
+
+  <script type = "module">
+    import {signIn, signOut, onUser, onLeave, getUserGJ} from "../FireUser.js"
+    function round(num){
+      return Math.round(num*100)/100;
+    }
+
+    let REVENUE_ACCOUNTS = [
+    "Acting Income",
+    "Coding Income",
+    "Fashion Income",
+    "Government Income",
+    "Labour Income",
+    "Mechatronics Income",
+    "Tutoring Income",
+    "Bursaries",
+    ]
+
+    let EXPENSES_ACCOUNTS = [
+    "Bank Charges",
+    "Software Expenses",
+    "Accumulated Depreciation"
+    ]
+
+    function profit(bals) {
+      let profit = 0;
+      for (let revAcc of REVENUE_ACCOUNTS) profit -= bals[revAcc];
+      console.log(profit);
+      let expenses = 0;
+      for (let expAcc of EXPENSES_ACCOUNTS) expenses += bals[expAcc];
+      console.log(expenses);
+      return profit - expenses;
+    }
+
+    let data = {
+      "assets": {
+        "current-assets": {
+          "Cash at Bank": 0,
+        },
+        "noncurrent-assets": {
+          "Computer Equipment": 0,
+          "Accumulated Depreciation": -1,
+        }
+      },
+      "equity": {
+        "equity": {
+          "Profit and Loss": 0,
+          "Drawings": -1
+        }
+      }
+    }
+
+    function fillDoc(bals, categories) {
+      for (let catid in categories) {
+        let cat = categories[catid];
+        let gtotal = 0;
+        let gtel = document.getElementById("total-"+catid);
+        for (let id in cat) {
+          // console.log();
+          let acc = cat[id];
+          let el = document.getElementById(id);
+          let tel = document.getElementById("total-" + id);
+          let total = 0;
+          for (let name in acc) {
+            let bal = bals[name];
+            if (acc[name] == -1) {
+              total -= bal;
+              bal = `(${round(bal)})`
+            }else {
+              if (bal < 0) {
+                bal *= -1;
+              }
+              total += bal;
+              bal = `${round(bal)}`
+            }
+            el.innerHTML += `<tr><td>${name}</td><td>${bal}</td></tr>`
+          }
+          gtotal += total;
+          if (total < 0) {
+            tel.innerHTML = `(${(round(total*-1))})`
+          }else {
+            tel.innerHTML = round(total)
+          }
+        }
+        if (gtotal < 0) {
+          gtel.innerHTML = `(${(round(gtotal*-1))})`
+        }else {
+          gtel.innerHTML = round(gtotal)
+        }
+      }
+    }
+
+    onUser(async (e) => {
+      let gj = await getUserGJ();
+      let bals = gj.getBalances();
+      bals["Profit and Loss"] = profit(bals);
+      console.log(bals);
+      fillDoc(bals, data);
+    })
+
+
+  </script>
+  <style>
+    table {
+      border-collapse: collapse;
+    }
+    thead{
+      text-align: center;
+    }
+    .total td {
+      padding-top: 0.5em;
+      border-bottom: 2px solid black;
+    }
+    th {
+      padding-top: 1em;
+      padding-bottom: 0.5em;
+    }
+    .row {
+    }
+
+
+  </style>
+</html>
