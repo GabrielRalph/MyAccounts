@@ -137,8 +137,8 @@ class EntryForm extends SvgPlus{
         let type = EntryProps[elem].type;
         let input = body[r][c].createChild("input-plus", {
           type: type,
+          placeholder: elem
         });
-        input.placeholder = elem;
         input.addEventListener("change", (nv) => {
           this.change();
         })
