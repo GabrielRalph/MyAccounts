@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <div>
+      <a href = "/ProfitAndLoss">Profit and Loss</a>
+      <a href = "/GeneralJournal">General Journal</a>
+      <a href = "/Accounts">Accounts</a>
+      <a href = "/Profile">Profile</a>
+      <a href = "/BalanceSheet">Balance Sheet</a>
+    </div>
+  </body>
+
+  <style>
+  @import url('https://fonts.googleapis.com/css2?family=Cutive+Mono&display=swap');
+  body{
+    font-family: 'Cutive Mono', monospace;
+    margin: 3em;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+  body > div {
+    position: relative;
+    height: 100%;
+    width: 100%;
+  }
+
+  a {
+    color: black;
+    font-size: 2em;
+    text-decoration: none;
+    position: absolute;
+  }
+  a:nth-of-type(5n) {
+    top: 0;
+    left: 0;
+  }
+  a:nth-of-type(5n + 1) {
+    top: 0;
+    right: 0;
+  }
+  a:nth-of-type(5n + 2) {
+    bottom: 0;
+    left: 0;
+  }
+  a:nth-of-type(5n + 3) {
+    bottom: 0;
+    right: 0;
+  }
+  a:nth-of-type(5n + 4) {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  </style>
+</html>

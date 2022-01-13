@@ -1,4 +1,4 @@
-import {SvgPlus} from "../3.5.js";
+import {SvgPlus} from "../SvgPlus/4.js";
 
 function setCarrot(el, pos){
   var range = document.createRange()
@@ -399,7 +399,7 @@ class TextField extends SvgPlus{
         "--place-state": t,
       }
     }
-    this.waveTransistion(fader, 300, val);
+    this.waveTransition(fader, 300, val);
   }
 
   onkeydown(e){

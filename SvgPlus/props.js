@@ -1,4 +1,4 @@
-import {Vector} from "../3.5.js"
+import {Vector} from "./4.js"
 
 function isNumber(num) {
   return typeof num === "number" && !Number.isNaN(num);
