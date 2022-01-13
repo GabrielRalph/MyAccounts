@@ -69,7 +69,6 @@ class EntryForm extends SvgPlus{
     this.change();
   }
 
-
   creditAutoFill(val) {
     if (this.inputs.credit.empty && !this.inputs.debit.empty) {
       this.inputs.credit.value = parseFloat(this.inputs.debit.value) + "";
