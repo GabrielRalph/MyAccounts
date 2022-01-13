@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <script type = "module" src = "../MyLoader/my-loader.js"></script>
+    <script type = "module" src = "../FireUser/fire-user.js"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cutive+Mono&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <fire-user users-ref = "generalJournal/users/" load-delay = "2000">
+      <div name = "loader">
+        <my-loader></my-loader>
+      </div>
+
+      <template name = "no-user">
+        <div class = "user-bar">
+          <div class = "btn" signin>
+            Sign in
+          </div>
+        </div>
+      </template>
+
+      <template name = "user">
+        <div class = "user-bar">
+          <div>
+            Hey {{displayName}}
+          </div>
+          <img src= "{{photoURL}}" />
+          <div class = "btn" signout>
+            Sign out
+          </div>
+        </div>
+
+        <form id = "details">
+          <div>
+            <div><span>Given Name </span> <input name = "first_name" /></div>
+            <div><span>Family Name </span> <input name = "last_name" /></div>
+            <div><span>Date of Birth </span> <input name = "dob" /></div>
+            <div><span>Email </span> <input name = "email" /></div>
+            <div><span>Number </span> <input name = "number" /></div>
+            <div><span>City </span> <input name = "city" /></div>
+            <div><span>Address </span> <input name = "address" /></div>
+            <div><span>Postcode </span> <input name = "postcode" /></div>
+            <div><span>ABN </span> <input name = "abn" /></div>
+            <div><span>TFN </span> <input name = "tfn" /></div>
+            <div><span>CRN </span> <input name = "crn" /></div>
+          </div>
+          <div onclick = "save()" class = "btn">
+            Save
+          </div>
+        </form>
+      </template>
+      <template name = "config">
+        {
+          "apiKey": "AIzaSyAwKRqxNdoO05hLlGZwb5AgWugSBzruw6A",
+          "authDomain": "myaccounts-4a6c7.firebaseapp.com",
+          "databaseURL": "https://myaccounts-4a6c7-default-rtdb.asia-southeast1.firebasedatabase.app",
+          "projectId": "myaccounts-4a6c7",
+          "storageBucket": "myaccounts-4a6c7.appspot.com",
+          "messagingSenderId": "678570989696",
+          "appId": "1:678570989696:web:ca70c09476d4c5f627ee65"
+        }
+      </template>
+    </fire-user>
+  </body>
+  <script>
+    let user = document.querySelector("body > fire-user");
+
+    user.addEventListener("user", async () => {
+      let data = (await user.get("details")).val();
+      setFormData(data);
+      user.loaded = true;
+    });
+
+    function getFormData(){
+      let details = document.getElementById("details");
+
+      let data = {}
+      for (let input of details.getElementsByTagName("input")) {
+        console.log(input.innerHTML);
+        data[input.getAttribute("name")] = input.value;
+      }
+      console.log(data);
+      return data;
+    }
+
+    function setFormData(data){
+      let details = document.getElementById("details");
+
+      if (data == null) return;
+      for (let input of details.getElementsByTagName("input")) {
+        let name = input.getAttribute("name");
+        if (name in data) {
+          input.value = data[name];
+        }
+      }
+    }
+
+    function save(){
+      user.update("details", getFormData());
+    }
+  </script>
+  <style>
+  my-loader svg {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    fill: none;
+    transform: translate(-50%, -50%);
+    stroke: red;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 0.3;
+    max-height: 100vh;
+    max-width: 100vw;
+  }
+    body {
+      margin: 2em;
+      font-family: 'Cutive Mono', monospace;
+    }
+    form > div {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 1em;
+    }
+    form > div > div {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1em;
+      border-bottom: 1px solid black;
+    }
+    form > div > div > span {
+      padding-right: 2em;
+    }
+    form > div > div > input {
+      display: inline;
+      width: 70%;
+      outline: none;
+      border: none;
+      font-family: 'Cutive Mono', monospace;
+      font-weight: bold;
+      font-size: 1em;
+    }
+    form input:-internal-autofill-selected {
+      background-color: transparent;
+    }
+    .user-bar {
+      margin-bottom: 1.5em;
+    }
+  </style>
+</html>

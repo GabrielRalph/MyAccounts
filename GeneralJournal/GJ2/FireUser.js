@@ -99,9 +99,10 @@ function onRemove(cb) {
   }
 }
 
-function syncUser(){
+function syncUser(path = "journal"){
   let userRef = getUserRef();
   if (userRef != null) {
+    userRef = child(userRef, path);
     onChildAdded(userRef, (data) => {
       onupdate(data);
     });
@@ -129,8 +130,10 @@ function updateEntry(key, data) {
     if (key == null) {
       key = push(userRef).key;
     }
+    console.log(key, data);
+
     updates[key] = data;
-    update(userRef, updates);
+    update(child(userRef, "journal"), updates);
   }
 }
 

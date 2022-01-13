@@ -1,10 +1,10 @@
 import {SvgPlus} from "../3.5.js";
 import {signIn, signOut, onUser, onLeave, getUserGJ} from "../FireUser.js"
 
+
 class Accounts extends SvgPlus {
   constructor(el) {
     super(el);
-
     this.load();
   }
   async load(){
@@ -18,12 +18,20 @@ class Accounts extends SvgPlus {
     }
   }
 }
+
 class Account extends SvgPlus{
   constructor(account){
-    super("div");
-    this.innerHTML = account.name
+    super("gj-account");
+    this.createChild("div", {class: "name"}).innerHTML = account.name;
+    this.type = this.createChild("div", {class: "type"});
+    if (account.type) {
+      this.type.innerHTML = account.type;
+    }else {
+      this.type.innerHTML = "no type"
+    }
   }
 }
+
 
 
 window.onclick = signIn;

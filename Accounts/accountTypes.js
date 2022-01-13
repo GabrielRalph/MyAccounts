@@ -66,3 +66,8 @@ const AccountTypes = {
   ],
   "Income": [],
 }
+
+
+class AccountTypes{
+
+}

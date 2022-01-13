@@ -3,65 +3,94 @@
   <head>
     <meta charset="utf-8">
     <title></title>
+    <script type = "module" src = "../MyLoader/my-loader.js"></script>
+    <script type = "module" src = "../FireUser/fire-user.js"></script>
+    <script type = "module" src = "./general-journal.js"></script>
+    <script type = "module" src = "./EntryForm.js"></script>
+    <link href = "./gj-styles.css" rel="stylesheet" />
+    <link href = "../InputPlus/input.css" rel="stylesheet" />
   </head>
-  <link href = "https://arcms.w4v.es/Assets/Supreme/stylesheet.css" rel="stylesheet" />
-  <link href = "./gj-styles.css" rel="stylesheet" />
-  <link href = "../InputPlus/input.css" rel="stylesheet" />
   <body>
-    <div id = control-bar>
-      <span id = sign-in>
-        Loading
-      </span>
-      <span id = open-filter style = "display:none;">FILTERS</span>
-      <span id = add-entry style = "display:none;">
-      </span>
-    </div>
-    <div id = journal>
-
-    </div>
-    <div id = form>
-
-    </div>
-    <div id = filters>
-      <div>
-        <div id = date-from>
-
-        </div>
-        <div id = date-to>
-
-        </div>
+    <fire-user users-ref = "generalJournal/users/">
+      <div name = "loader">
+        <my-loader></my-loader>
       </div>
 
-      <div>
-        <div id = credit-acc-filter>
-
+      <template name = "no-user">
+        <div class = "user-bar">
+          <div class = "btn" signin>
+            Sign in
+          </div>
         </div>
-        <div id = debit-acc-filter>
+      </template>
 
+      <template name = "user">
+        <div class = "user-bar">
+          <div>
+            Hey {{displayName}}
+          </div>
+          <img src="{{photoURL}}" />
+          <div class = "btn" signout>
+            Sign out
+          </div>
         </div>
-      </div>
 
-      <div>
-        <div id = min-trans>
+        <general-journal></general-journal>
+        <entry-form></entry-form>
+      </template>
 
-        </div>
-        <div id = max-trans>
-
-        </div>
-      </div>
-    </div>
-
+      <template name = "config">
+        {
+          "apiKey": "AIzaSyAwKRqxNdoO05hLlGZwb5AgWugSBzruw6A",
+          "authDomain": "myaccounts-4a6c7.firebaseapp.com",
+          "databaseURL": "https://myaccounts-4a6c7-default-rtdb.asia-southeast1.firebasedatabase.app",
+          "projectId": "myaccounts-4a6c7",
+          "storageBucket": "myaccounts-4a6c7.appspot.com",
+          "messagingSenderId": "678570989696",
+          "appId": "1:678570989696:web:ca70c09476d4c5f627ee65"
+        }
+      </template>
+    </fire-user>
   </body>
 
   <style>
-  @import url('https://fonts.googleapis.com/css2?family=Cutive+Mono&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Cutive+Mono&display=swap');
     body{
       font-family: 'Cutive Mono', monospace;
-      margin: 2em;
-      font-size: 3vmin;
+      margin: 1em;
       overflow: hidden;
+      position: fixed;
+      font-size: 16pt;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
     }
-    #open-filter {
+
+    /* fire-user {height: 100%;display: block; position: relative;} */
+
+    general-journal {
+      overflow: scroll;
+      position: absolute;
+      top: 2em;
+      left: 0;
+      right: calc(30% + 1em);
+      bottom: 0;
+    }
+    entry-form {
+      width: 100%;
+      display: table;
+      overflow: scroll;
+      position: absolute;
+      top: 2em;
+      left: 70%;
+      right: 0;
+      bottom: 0;
+    }
+    entry-form td {
+      padding-top: 1em;
+    }
+    /* #open-filter {
     }
 
     .mobile #control-bar {
@@ -157,18 +186,27 @@
     .placeholder p {
       display: inline;
     }
-    .entry-form {
-      width: 100%;
-    }
+
     .entry-form tr td:nth-of-type(2) {
       width: 20%;
     }
     .entry-form td {
       padding-top: 1em;
-    }
+    } */
   </style>
-  <script src = "app.js" type = "module">
+  <script>
+    let fireuser = document.querySelector("body > fire-user");
 
+    fireuser.addEventListener("user", async () => {
+      let gj = document.getElementsByTagName("general-journal")[0];
+      let update = (sc) => {
+        gj.addEntry(sc.key, sc.val());
+        fireuser.loaded = true;
+      }
+      fireuser.onChildAdded("journal", update);
+      fireuser.onChildChanged("journal", update);
+      fireuser.onChildRemoved("journal", (sc) => gj.removeEntry(sc.key));
+    })
 
   </script>
 </html>

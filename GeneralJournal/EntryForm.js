@@ -1,13 +1,13 @@
-import {SvgPlus} from "../3.5.js"
+import {SvgPlus} from "../SvgPlus/4.js"
 import {TextField} from "../InputPlus/inputPlus.js"
 import {Icon} from "../SvgPlus/Icons.js"
 import {TBody, Tr, Td} from "../SvgPlus/Table.js"
 import {makeProps} from "../SvgPlus/props.js"
-import {EntryProps, datef} from "./GeneralJournal.js"
+import {EntryProps, dF} from "../gj.js"
 
 class EntryForm extends SvgPlus{
-  constructor(original = null) {
-    super("table");
+  constructor(el) {
+    super(el);
     this.class = "entry-form"
 
     let body = new TBody(5,2);
@@ -22,21 +22,15 @@ class EntryForm extends SvgPlus{
      ["lifespan"]
    ];
 
-    this.original = original;
     this.appendChild(body);
     this.body = body;
-
+    this.original = {}
     let inputs = this.fillBodyInputs(body);
     inputs.date.validate = (val) => this.dateValidate(val);
     inputs.debit.addEventListener("focusout", () => this.creditAutoFill(inputs.debit.value));
     this.inputs = inputs;
   }
 
-  set edit(value){
-    for (let nm in this.inputs) {
-      this.inputs[nm].edit = value;
-    }
-  }
 
   set accountNames(value) {
     this.inputs["credit-acc"].suggestions = value;
@@ -50,7 +44,7 @@ class EntryForm extends SvgPlus{
 
 
     if (!Number.isNaN(date.getTime())) {
-      string += `: <p>${datef(date)}</p>`
+      string += `: <p>${dF(date)}</p>`
       valid = true;
     }
 
@@ -69,6 +63,8 @@ class EntryForm extends SvgPlus{
     if (this.onchange instanceof Function) {
       this.onchange();
     }
+    const event = new Event("change");
+    this.dispatchEvent(event);
   }
 
   fillBodyInputs(body) {
@@ -84,7 +80,7 @@ class EntryForm extends SvgPlus{
         body[r][c].appendChild(input);
         let type = EntryProps[elem].type
         if (type === "date" || type === "time")
-          input.value = datef(original[elem]);
+          input.value = dF(original[elem]);
         else
           input.value = original[elem];
         input.placeholder = elem;
@@ -121,6 +117,11 @@ class EntryForm extends SvgPlus{
     for (let name in this.inputs)vals[name] = this.inputs[name].value;
     return makeProps(EntryProps, vals).json;
   }
+  set edit(value){
+    for (let nm in this.inputs) {
+      this.inputs[nm].edit = value;
+    }
+  }
 
   get hasChanged(){
     let edit = this.edit;
@@ -139,7 +140,6 @@ class EntryForm extends SvgPlus{
 
     return false;
   }
-
   get valid(){
     let edit = this.edit;
     if (edit.date == -1) return false;
@@ -151,4 +151,4 @@ class EntryForm extends SvgPlus{
   }
 }
 
-export {EntryForm}
+SvgPlus.defineHTMLElement(EntryForm)

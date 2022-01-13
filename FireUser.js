@@ -140,7 +140,7 @@ async function getUserGJJSON(){
 }
 
 async function getUserGJ(){
-  return new GJObj(await getUserGJ());
+  return new GJObj(await getUserGJJSON());
 }
 
 

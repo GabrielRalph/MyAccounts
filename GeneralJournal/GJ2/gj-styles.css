@@ -1,8 +1,5 @@
 
-general-journal {
-  display: block;
-}
-general-journal table {
+.journal {
   border-spacing: 0;
 }
 .entry td{
@@ -17,14 +14,14 @@ general-journal table {
 }
 .entry .account{
   padding-right: 0.5em;
-  border-right: 1.5px solid black;
+  border-right: 2px solid black;
 }
 .entry .description{
   color: rgb(125,125,122);
-  border-top: 1.5px solid black;
+  border-top: 2px solid black;
 }
 .entry .details td:first-of-type {
-  border-top: 1.5px solid white;
+  border-top: 2px solid white;
 }
 .entry .details td{
   padding-bottom: 2em;
@@ -32,7 +29,7 @@ general-journal table {
 }
 .entry .date{
   font-weight: normal;
-  padding-right: 0.5em;
+  padding-right: 2em;
 }
 
 .entry .debit .value, .debit-title{
