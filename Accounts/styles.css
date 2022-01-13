@@ -1,0 +1,11 @@
+body {
+  font-family: monospace;
+}
+
+
+gj-account{
+  display: flex;
+  font-size: 1.4em;
+  margin: 1em 1em;
+  justify-content: space-between;
+}

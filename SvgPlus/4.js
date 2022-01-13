@@ -60,6 +60,7 @@ class PlusError{
 }
 
 // 2D vector class
+let DecimalPlaces = 5;
 class Vector{
 	constructor(x = 0, y = null){
 		try{
@@ -167,7 +168,8 @@ class Vector{
 			this.y = 0;
 			console.error(`error creating vector\n\n${e}\n\nResult: V(${this})`);
 		}
-		// this.precision = 10;
+
+    this.decimalPlaces = DecimalPlaces;
 	}
 
 	forMate(val){
@@ -395,21 +397,25 @@ class Vector{
 			}
 		}
 	}
+
 	isZero(){
 		return (this.x == 0 && this.y == 0)
 	}
+
 	toString(){
-		return `${this.x},${this.y}`
+    let v = this.round(this.decimalPlaces);
+    return `${v.x},${v.y}`
 	}
 }
 
-
 class SvgPlus{
   constructor(el){
-    el = SvgPlus.parseElement(el);
-
-    let prototype = Object.getPrototypeOf(this);
-    return SvgPlus.extend(el, prototype);
+    if (!SvgPlus.is(el, SvgPlus)) {
+      el = SvgPlus.parseElement(el);
+      let prototype = Object.getPrototypeOf(this);
+      el = SvgPlus.extend(el, prototype);
+    }
+    return el;
   }
 
   saveSvg(name = 'default'){
@@ -450,7 +456,6 @@ class SvgPlus{
   }
 
   watch(config, callback){
-
     this._mutationObserver = new MutationObserver((mutation, observer) => {
       if (!(callback instanceof Function)){
         if (this.onmutation instanceof Function){
@@ -517,6 +522,8 @@ class SvgPlus{
       var value = props[prop]
       if (prop == 'style' || prop == 'styles'){
         this.styles = value
+      }else if (prop == "innerHTML" || prop == "content") {
+        this.innerHTML = value;
       }else if (value != null){
         let set = true;
         try{
@@ -545,7 +552,11 @@ class SvgPlus{
     let child;
 
     if (Name instanceof Function && Name.prototype instanceof SvgPlus){
-      child = new Name(arguments[1])
+      if (arguments.length > 1){
+        child = new Name(arguments[1]);
+      }else{
+        child = new Name();
+      }
     }else{
       child = new SvgPlus(Name);
       try{
@@ -562,7 +573,7 @@ class SvgPlus{
   }
 
   /**
-    Wave transistion
+    Wave transition
 
     @param update update(progress) function to be called on each animation frame
       update function will be passed a number from 0 to 1 which will be the
@@ -576,7 +587,7 @@ class SvgPlus{
 
 
   */
-  async waveTransistion(update, duration = 500, dir = false){
+  async waveTransition(update, duration = 500, dir = false){
     if (!(update instanceof Function)) return 0;
 
     duration = parseInt(duration);
@@ -721,15 +732,20 @@ class SvgPlus{
   }
 
   static extend(elem, proto){
-    let keys = Object.getOwnPropertyNames(proto);
     if (proto != Object.prototype){
       let _proto = Object.getPrototypeOf(proto);
       elem = SvgPlus.extend(elem, _proto);
     }else{
       return elem
     }
+    let keys = [];
+    if (!SvgPlus.is(elem, proto.constructor)){
+      keys = Object.getOwnPropertyNames(proto);
+    }else {
+      console.log("re extend");
+    }
     let build = false
-    keys.forEach((key) => {
+    for (let key of keys) {
       var prop = Object.getOwnPropertyDescriptor(proto, key);
       if (key != 'constructor'){
         if (key == 'build'){
@@ -753,10 +769,9 @@ class SvgPlus{
           }
         }else{
           elem['__+'] = [proto.constructor]
-          // Object.defineProperty(elem, '__+', prop);
         }
       }
-    })
+    }
     if(build){ elem.plus_constructor()}
     return elem;
   }
@@ -774,8 +789,62 @@ class SvgPlus{
     }
     return false;
   }
-}
 
+  static defineHTMLElement(classDef){
+    let className = classDef.name.replace(/(\w)([A-Z][^A-Z])/g, "$1-$2").toLowerCase();
+    let props = Object.getOwnPropertyDescriptors(classDef.prototype);
+
+    let setters = [];
+    for (let propName in props) {
+      let prop = props[propName]
+      if ("set" in prop && prop.set instanceof Function) {
+        setters.push(propName);
+      }
+    }
+
+    let htmlClass = class extends HTMLElement{
+      constructor(){
+        super();
+        new classDef(this);
+      }
+      connectedCallback(){
+        if (this.onconnect instanceof Function) {
+          if (this.isConnected) {
+            this.onconnect();
+          }
+        }
+      }
+      disconnectedCallback(){
+        if (this.ondisconnect instanceof Function) {
+          this.ondisconnect();
+        }
+      }
+
+      adoptedCallback(){
+        if (this.onadopt instanceof Function) {
+          this.onadopt();
+        }
+      }
+
+      attributeChangedCallback(name, oldv, newv){
+        this[name] = newv;
+      }
+
+      static get observedAttributes() { return setters; }
+    }
+    console.log(className+ " custom element defined");
+    customElements.define(className, htmlClass);
+  }
+
+  static addCSSSStyleSheet(sheet) {
+    let oldStyles = document.adoptedStyleSheets;
+    let styles = [sheet];
+    for (let style of oldStyles) {
+      styles.push(style);
+    }
+    document.adoptedStyleSheets = styles;
+  }
+}
 
 class LinkItem{
   constructor(){
@@ -853,14 +922,47 @@ class LinkItem{
       }
     }
   }
+
+  clear(){
+    this.last = null;
+    this.next = null;
+  }
 }
 
 class LinkList{
   constructor(){
-    this.start = null;
-    this.end = null;
-    this.length = 0;
+    this._start = null;
+    this._end = null;
+    this._length = 0;
     this._onupdate = [];
+  }
+
+  get length(){
+    return this._length;
+  }
+
+  set start(start){
+    if (start instanceof LinkItem){
+      this._start = start;
+    }else{
+      this._start = null;
+    }
+  }
+
+  get start(){
+    return this._start;
+  }
+
+  set end(end){
+    if (end instanceof LinkItem){
+      this._end = end;
+    }else{
+      this._end = null;
+    }
+  }
+
+  get end(){
+    return this._end;
   }
 
   addUpdateListener(callback){
@@ -872,9 +974,9 @@ class LinkList{
   }
 
   update(){
-    this._onupdate.forEach((callback) => {
+    for(var callback of this._onupdate){
       callback()
-    });
+    }
   }
 
   // Pushes LinkItem or LinkList at the end of this list
@@ -885,57 +987,52 @@ class LinkList{
         return
       }
 
-      this.length ++;
+      item.clear();
+      item.parent = this;
 
       //if the node was unset <start> => item <= <end>
       if (this.end == null || this.start == null){
         this.start = item; // <start> => item
         this.end = item;   // <end> => end
 
+
+
         //Otherwise end refers to <end> <=> <item>
         //                        <end> => <item>
       }else{
-        this.end.link(item)
+        this.end.link(item);
         this.end = item;
       }
+
+      this._length ++;
     }else if(item instanceof LinkList){
-      if ( this.contains(item) ){
-        throw 'The given list contains elements already contained within this list\nELEMENTS SHOULD NOT BE CONTAINED IN MULTIPLY LISTS'
-        return
-      }
-
-      this.length += item.length
-      //if node not set <start> => <item.start>  <item.end> <= <end>
-      if (this.end == null || this.start == null){
-        this.start = item.start;
-        this.end = item.end;
-
-        //Else      <end> <=> item
-        //          item <= <end>
-      }else{
-        this.end.link(item.start)
-        this.end = item.end;
+      for (var subItem of item){
+        this.push(item);
       }
     }
     this.update();
   }
+
+
 
   // Pop linked item from the end of the list
   pop(){
     if (this.end == null || this.start == null){
       return null
     }else if (this.end == this.start){
-      this.length = 0;
+      this._length = 0;
       let temp = this.end;
       this.end = null;
       this.start = null;
+      temp.parent = null;
       return temp;
     }else{
-      this.length --;
+      this._length --;
       let oldl = this.end;
       let newl = this.end.last
       oldl.break();
       this.end = newl;
+      oldl.parent = null;
       return oldl
     }
     this.update();
@@ -946,19 +1043,21 @@ class LinkList{
     if (this.end == null || this.start == null){
       return null
     }else if (this.end == this.start){
-      this.length = 0;
+      this._length = 0;
 
       let temp = this.start;
       this.end = null;
       this.start = null;
+      temp.parent = null;
       return temp;
     }else{
-      this.length --;
+      this._length --;
 
       let oldl = this.start;
       let newl = this.start.next;
       oldl.break();
       this.start = newl;
+      oldl.parent = null;
       return oldl
     }
     this.update()
@@ -972,7 +1071,8 @@ class LinkList{
         return
       }
 
-      this.length ++;
+      item.clear();
+      item.parent = this;
 
       //not set:  <start> => item <= <end>
       if (this.end == null || this.start == null){
@@ -985,27 +1085,29 @@ class LinkList{
         this.start = item;
       }
 
+      this._length ++;
 
     }else if(item instanceof LinkList){
-      if ( this.contains(item) ){
-        throw 'The given list contains elements already contained within this list\nELEMENTS SHOULD NOT BE CONTAINED IN MULTIPLY LISTS'
-        return
-      }
-
-      this.length += item.length;
-
-      // <start> => item <= <end>
-      if (this.start == null){
-        this.start = item.start;
-        this.end = item.end;
-
-        // item <=> <start> | <start> => item
-      }else{
-        item.end.link(this.start)
-        this.start = item.start;
+      for (var subItem of item){
+        this.queue(subItem);
       }
     }
     this.update();
+  }
+
+  [Symbol.iterator]() {
+    let cur = this.start;
+    return {
+      next: () => {
+        if (cur == null) {
+          return {done: true}
+        } else {
+          let oldcur = cur;
+          cur = cur.next;
+          return {value: oldcur, done: false}
+        }
+      }
+    }
   }
 
   forEach(visit){
@@ -1030,25 +1132,16 @@ class LinkList{
   }
 
   contains(val){
-    let res = false;
     if (val instanceof LinkItem){
-      this.forEach((item) => {
-        res |= (item == val);
-      });
-    }else if (val instanceof LinkList){
-      this.forEach((item) => {
-        val.forEach((val_item) => {
-          res |= (item == val_item);
-        })
-      })
+      return val.parent !== null;
     }
-    return res
+    return false;
   }
 
   clear(){
-    this.end = null;
-    this.start = null;
-    this.length = 0;
+    this._end = null;
+    this._start = null;
+    this._length = 0;
     this.update();
   }
 }
@@ -1073,6 +1166,7 @@ class CPoint extends LinkItem{
     this._sweep_flag = 0;
 
     this.cmd = string
+    // console.log(this.cmd_type, );
   }
 
   toggleAbsolute(){
@@ -1091,6 +1185,23 @@ class CPoint extends LinkItem{
 
   clone(){
     return new CPoint(`${this}`);
+  }
+
+
+  get cmd_types(){
+    return "MmLlHhVvCcSsQqTtAaZz";
+  }
+  set cmd_type(type){
+    if (typeof type === 'string' && type.length == 1 && this.cmd_types.indexOf(type) !== -1){
+      this._cmd_type = type;
+      this.update();
+    }else{
+      this._cmd_type = null;
+    }
+  }
+
+  get cmd_type(){
+    return this._cmd_type;
   }
 
   get p(){
@@ -1176,6 +1287,26 @@ class CPoint extends LinkItem{
     this.update();
   }
 
+  get c(){
+    let c = new CPoint();
+    c.cmd_type = this.isAbsolute() ? "C" : "c";
+    switch (this.cmd_type){
+      case "L":
+        c.c1 = this.lastAbsolute;
+        c.c2 = this.p;
+        c.p = this.p;
+        return c;
+      case "l":
+        c.c1 = new Vector(0);
+        c.c2 = this.p;
+        c.p = this.p;
+
+
+
+    }
+    return c;
+  }
+
 
 
   get lastAbsolute(){
@@ -1238,15 +1369,14 @@ class CPoint extends LinkItem{
     //Get command type
     let type = string[0];
 
+    this.cmd_type = type;
+    if (this.cmd_type == null){
+      throw `Error setting cmd:\n${type} is not a valid type`
+    }
 
     //If z, then set cmd_type and return
     if (type == 'z'|| type == 'Z'){
-      this.cmd_type = type;
       return
-    }
-    if (('MmLlHhVvCcSsQqTtAa').indexOf(type) == -1){
-      this.cmd_type = null;
-      throw `Error setting cmd:\n${type} is not a valid type`
     }
 
     //Get numbers
@@ -1431,6 +1561,7 @@ class CPoint extends LinkItem{
       case 'Z': return `${this.cmd_type}`
     }
   }
+
 }
 
 class DPath extends LinkList{
@@ -1588,22 +1719,22 @@ class DPath extends LinkList{
     //Split
     cmds = cmds.split('\n');
 
-
-    cmds.forEach((cmd) => {
+    for (var cmd of cmds){
       let error = false;
       let cpoint = null;
       try{
-        cpoint = new CPoint(cmd)
+        cpoint = new CPoint(cmd);
       }catch(e){
+        console.log(e);
         error = true;
       }
       if (!error) this.push(cpoint);
-    });
+    }
   }
 
   makeAbsolute(){
     let last = this.start.p;
-    this.forEach((point) => {
+    for (var point of this){
       if (point.cmd_type == 'V'){
         point.x = last.x;
       }
@@ -1617,7 +1748,7 @@ class DPath extends LinkList{
         point.cmd_type = point.cmd_type.toUpperCase();
         last = point.p;
       }
-    });
+    }
     this.update();
   }
 
@@ -1637,9 +1768,9 @@ class DPath extends LinkList{
   toString(){
     let str = ''
     if (this.end == null) {return str}
-    this.forEach((item) => {
+    for(var item of this){
       str += `${item}`
-    });
+    }
     return str
   }
 }
@@ -1649,13 +1780,36 @@ class SvgPath extends SvgPlus{
     if (el === null) el = 'path';
     super(el);
 
-    this.d = new DPath(this.getAttribute('d'));
+    this._d = new DPath(this.getAttribute('d'));
 
-    this.d.addUpdateListener(() => {
+    this._d.addUpdateListener(() => {
       this.setAttribute('d', this.d_string);
     })
 
     this.watch({attributes: true})
+  }
+
+  set stroke(stroke){
+    this.styles = {
+      stroke: stroke
+    }
+  }
+
+  set fill(fill){
+    this.styles = {
+      fill: fill
+    }
+  }
+
+  set strokeWidth(width){
+    this.styles = {
+      'stroke-width': width
+    }
+  }
+
+
+  get d(){
+    return this._d;
   }
 
   onmutation(mutation){

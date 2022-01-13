@@ -1,4 +1,4 @@
-import {SvgPlus, SvgPath, Vector} from "../3.5.js";
+import {SvgPlus, SvgPath, Vector} from "./4.js";
 
 let Icons = {
   edit: `<path d="M99.84,20.75L40.2,80.4c0,0-6.65-1.74-12.83-7.92s-7.92-12.83-7.92-12.83L79.1,0c0,0,4.03,1.25,11.76,8.99S99.84,20.75,99.84,20.75z"/>
@@ -17,8 +17,6 @@ let Icons = {
   <polygon style = "fill: white" points="50,26.43 31.59,46.12 41.44,46.12 41.44,73.57 58.56,73.57 58.56,46.12 68.41,46.12 "></polygon>
 `
 }
-
-
 
 class Icon extends SvgPlus{
   constructor(icon_name){

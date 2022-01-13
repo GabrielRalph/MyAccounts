@@ -1,50 +1,9 @@
-import {SvgPlus} from "../3.5.js"
+import {SvgPlus} from "../SvgPlus/4.js"
 import {TBody, Tr, Td} from "../SvgPlus/Table.js"
 import {makeProps} from "../SvgPlus/props.js"
-
-function dateFormat(date){
-  if (date == -1) return "";
-  let d = new Date(date);
-  d = (""+d).split(" ");
-  return `${d[2]} ${d[1]} ${d[3]}`;
-}
-function datef(date){
-  return dateFormat(date);
-}
-function moneyFormat(value) {
-  if (value == Math.round(value)) {
-    return "$" + value;
-  }else{
-    return "$" + Math.round(value*100)/100;
-  }
-}
-
-let EntryProps = {
-  date: {
-    type: "time",
-  },
-  lifespan: {
-    type: "number",
-    default: 0,
-  },
-  debit: {
-    type: "number",
-    default: 0,
-  },
-  credit: {
-    type: "number",
-    default: 0,
-  },
-  "debit-acc": {
-    type: "string",
-  },
-  "credit-acc": {
-    type: "string",
-  },
-  description: {
-    type: "string",
-  }
-}
+import {EntryProps, dF, mF} from "../gj.js"
+import sheet from './gj-styles.css' assert { type: 'css' };
+SvgPlus.addCSSSStyleSheet(sheet);
 
 class JournalEntry extends TBody{
   constructor(key, data = {}){
@@ -82,13 +41,13 @@ class JournalEntry extends TBody{
     data = data.json;
 
     this[0].class = "debit";
-    this[0][0].value = dateFormat(data.date);
+    this[0][0].value = dF(data.date);
     this[0][0].class = "date"
 
     this[0][1].value = data["debit-acc"];
     this[0][1].class = "account";
 
-    this[0][2].value = moneyFormat(data.debit);
+    this[0][2].value = mF(data.debit);
     this[0][2].class = "value";
 
 
@@ -96,7 +55,7 @@ class JournalEntry extends TBody{
     this[1][1].value = data["credit-acc"];
     this[1][1].class = "account"
 
-    this[1][3].value = moneyFormat(data.credit);
+    this[1][3].value = mF(data.credit);
     this[1][3].class = "value";
 
     this[2].class = "details";
@@ -110,21 +69,21 @@ class JournalEntry extends TBody{
 }
 
 class GeneralJournal extends SvgPlus{
-  constructor() {
-    super("TABLE");
+  #accountNames = {};
+  constructor(el) {
+    super(el);
     this.entries = {};
-
-    this._accountNames = {};
     this._from = 0;
     this._to = Infinity;
     this.class = "journal"
     this.sortKey = "date";
+    this.table = this.createChild("table");
   }
 
   clear(){
     this.innerHTML = "";
     this.entries = {};
-    this._accountNames = {};
+    this.#accountNames = {};
   }
 
   set from(date){
@@ -156,7 +115,7 @@ class GeneralJournal extends SvgPlus{
   }
 
   get accountNames(){
-    return Object.keys(this._accountNames);
+    return Object.keys(this.#accountNames);
   }
 
   filter() {
@@ -169,8 +128,6 @@ class GeneralJournal extends SvgPlus{
     if (element.date < this.from || element.date > this.to) {
       filter = "none";
     }
-
-
     element.styles = {
       display: filter,
     }
@@ -178,19 +135,22 @@ class GeneralJournal extends SvgPlus{
   sort(key) {
     this.sortKey = key;
     let children = [];
-    for (let child of this.children) {
+    for (let child of this.table.children) {
       children.push(child);
     }
     children.sort((a, b) => a[key] > b[key] ? 1 : -1);
     for (let child of children) {
-      this.prepend(child);
+      this.table.prepend(child);
     }
   }
 
-  onselect(entry){
-    console.log(entry.key);
+  select(entry){
+    const event = new Event("select");
+    event.selectedEntry = entry
+    this.dispatchEvent(event);
   }
-  ondblselect(entry){
+
+  dblselect(entry){
     console.log(entry.key);
   }
 
@@ -201,7 +161,7 @@ class GeneralJournal extends SvgPlus{
     if (key in this.entries) {
       //remove old account names
       for (let name of this.entries[key].accountNames) {
-        delete this._accountNames[name];
+        delete this.#accountNames[name];
       }
       this.entries[key].data = entryData;
 
@@ -209,19 +169,19 @@ class GeneralJournal extends SvgPlus{
     } else {
       let entry = new JournalEntry(key, entryData);
       entry.onclick = () => {
-        this.onselect(entry);
+        this.select(entry);
       }
       entry.ondblclick = () => {
-        this.ondblselect(entry);
+        this.dblselect(entry);
       }
       this.entries[key] = entry;
-      this.appendChild(entry);
+      this.table.appendChild(entry);
       this.filterElement(entry);
     }
 
     //add acount names
     for (let name of this.entries[key].accountNames) {
-      this._accountNames[name] = true;
+      this.#accountNames[name] = true;
     }
     this.sort(this.sortKey);
   }
@@ -233,11 +193,11 @@ class GeneralJournal extends SvgPlus{
 
       //remove old account names
       for (let name of entry.accountNames) {
-        delete this._accountNames[name];
+        delete this.#accountNames[name];
       }
-      this.removeChild(entry);
+      this.table.removeChild(entry);
     }
   }
 }
 
-export {JournalEntry, GeneralJournal, EntryProps, datef, moneyFormat}
+SvgPlus.defineHTMLElement(GeneralJournal)

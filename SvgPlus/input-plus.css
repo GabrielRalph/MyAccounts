@@ -1,0 +1,41 @@
+input-plus {
+  display: inline-block;
+  width: 100%;
+}
+input-plus[invalid] span:last-of-type {
+  color: red;
+}
+
+input-plus > div {
+  margin-top: 1.3em;
+  position: relative;
+}
+input-plus .placeholder {
+  position: absolute;
+  z-index: -1;
+  user-select: none;
+  top: 0;
+  left: 0;
+  transform: translate(calc(-10% * var(--placeholder-factor)), calc(-100% * var(--placeholder-factor))) scale(calc(1 - 0.2 * var(--placeholder-factor)));
+}
+input-plus .placeholder span:last-of-type{
+  margin-left: 0.5em;
+}
+input-plus .suggestion {
+  position: absolute;
+  z-index: -1;
+  user-select: none;
+  top: 0;
+  left: 0;
+  opacity: 0.6;
+}
+input-plus input {
+  display: block;
+  outline: none;
+  padding: 0;
+  border: none;
+  font-family: inherit;
+  font-size: 1em;
+  background: transparent;
+  width: 100%;
+}

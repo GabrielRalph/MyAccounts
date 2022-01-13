@@ -1,4 +1,4 @@
-import {Vector} from "../3.5.js"
+import {Vector} from "./4.js"
 
 function isNumber(num) {
   return typeof num === "number" && !Number.isNaN(num);
@@ -28,7 +28,7 @@ function vectorFromString(str) {
   return null;
 }
 
-let Types = {
+const Types = {
   number: {
     parse: (value) => {
       if (typeof value === "string") {
@@ -77,7 +77,7 @@ let Types = {
       if (value instanceof Date) return value.getTime();
       let date = new Date(value);
       let time = date.getTime()
-      if (!Number.isNaN(time) && time > 0) return time;
+      if (!Number.isNaN(time)) return time;
       return null;
     },
     default: -1,
@@ -152,7 +152,6 @@ let Types = {
     getOverride: true,
   },
 };
-
 
 function addProps(properties, json, obj, name = "json") {
   if (typeof properties !== "object" || properties == null) return null;
@@ -254,4 +253,4 @@ function validate(props, json) {
   return makeProps(props, json).json;
 }
 
-export {addProps, makeProps, validate}
+export {Types, addProps, makeProps, validate}
