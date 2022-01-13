@@ -410,9 +410,12 @@ class Vector{
 
 class SvgPlus{
   constructor(el){
-    el = SvgPlus.parseElement(el);
-    let prototype = Object.getPrototypeOf(this);
-    return SvgPlus.extend(el, prototype);
+    if (!SvgPlus.is(el, SvgPlus)) {
+      el = SvgPlus.parseElement(el);
+      let prototype = Object.getPrototypeOf(this);
+      el = SvgPlus.extend(el, prototype);
+    }
+    return el;
   }
 
   saveSvg(name = 'default'){

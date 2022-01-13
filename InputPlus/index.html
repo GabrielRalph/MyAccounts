@@ -3,148 +3,75 @@
   <head>
     <meta charset="utf-8">
     <title></title>
+    <script type = "module" src = "./input-plus.js"></script>
   </head>
   <body>
     <table>
       <tr>
-        <td id = "date">
-
+        <td colspan = 2>
+          <input-plus placeholder = "date" type = "date"></input-plus>
         </td>
-        <td id = "debit-acc">
-
+      </tr>
+      <tr>
+        <td>
+          <input-plus placeholder = "credit account"></input-plus>
         </td>
-        <td id = "debit">
-
-          </td>
-        </tr>
-        <tr>
-          <td>
-
-            </td>
-          <td id = "credit-acc">
-
-            </td>
-            <td id = "credit">
-
-              </td>
-          </tr>
-          <tr>
-            <td colspan = "3" id = "description">
-
-              </td>
-            </tr>
-      </table>
-
+        <td>
+          <input-plus placeholder = "credit" type = "number"></input-plus>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <input-plus placeholder = "debit account"></input-plus>
+        </td>
+        <td>
+          <input-plus placeholder = "debit" type = "number"></input-plus>
+        </td>
+      </tr>
+      <tr>
+        <td colspan = 2>
+          <input-plus placeholder = "description"></input-plus>
+        </td>
+      </tr>
+    </table>
   </body>
-  <script type="module">
-    import {TextInput, TextField} from "./input.js";
-    function dateFormat(date){
-      let d = new Date(date);
-      d = (""+d).split(" ");
-      return `${d[2]} ${d[1]} ${d[3]}`;
-    }
 
-    let inputs = {};
-    for (let key of ["credit", "debit", "date", "credit-acc", "debit-acc", "description"]) {
-      let input = new TextField(key);
-      inputs[key] = input;
-      input.placeholder = key;
-    }
-
-    inputs["debit"].input.type = "number";
-    inputs["date"].input.type = "date";
-    inputs["date"].validate = (v) => {
-      console.log(v);
-      let valid = true;
-      if (v.length > 0) {
-        if (Number.isNaN((new Date(v)).getTime())) {
-          valid = false;
-          inputs["date"].placeholder = "date"
-        }else {
-          valid = true;
-          inputs["date"].placeholder = `date: <span style = "font-size: 0.7em; transform: scale(2);">${dateFormat(new Date(v))}</span>`;
-        }
-      }else{
-        inputs["date"].placeholder = "date"
-      }
-
-      return valid;
-    }
-
-
-
-
-
-  </script>
   <style>
-    body {
-      font-family: "Supreme LL TT";
-      font-size: 4.3vw;
-      --scale: 0.5;
-      margin: 1em;
-    }
-    table {
-      width: 100%;
-      border-spacing: 0;
-    }
-    tr td:first-of-type {
-      width: 20%;
-    }
-    tr td:last-of-type {
-      width: 20%;
-    }
-    table tr:nth-of-type(2) td{
-      padding-top: 0.2em;
-      padding-left: 1em;
-    }
-    /* #description .placeholder {
-      transform: translate(0, -.5em);
-    } */
-    #description  {
-      padding-top: 0.2em;
-
-      /* padding-top: 0.5em; */
-      /* margin: 0.2em 0; */
-      /* font-size: 0.8em; */
-    }
-    td {
-      width: 35%;
-    }
-    [contenteditable] {
-      outline: none;
-    }
-    .text-field {
-      /* margin-top: 0.6em; */
-      padding-bottom: 0.1em;
-      border-bottom: 2px solid black;
-    }
-    .suggestion{
-      opacity: 0.5;
-    }
-    .placeholder {
-      overflow: hidden;
-      font-size: 1em;
-    }
-    .invalid .placeholder {
+    input-plus[invalid] span:last-of-type {
       color: red;
     }
-    .text-field > div {
-      margin-top: 0.6em;
+    input-plus > div {
+      margin-top: 1.3em;
+      position: relative;
     }
-    .input {
-      width: 100%;
-      height: 100%;
+    input-plus .placeholder {
+      position: absolute;
+      z-index: -1;
+      user-select: none;
+      top: 0;
+      left: 0;
+      transform: translate(calc(-10% * var(--placeholder-factor)), calc(-100% * var(--placeholder-factor))) scale(calc(1 - 0.2 * var(--placeholder-factor)));
+    }
+    input-plus .placeholder span:last-of-type{
+      margin-left: 0.5em;
+    }
+    input-plus .suggestion {
+      position: absolute;
+      z-index: -1;
+      user-select: none;
+      top: 0;
+      left: 0;
+      opacity: 0.6;
+    }
+    input-plus input {
+      display: block;
+      outline: none;
+      padding: 0;
+      border: none;
+      font-family: inherit;
+      font-size: 1em;
+      background: transparent;
     }
 
-    /* .text-field .placeholder {
-      transition: cubic-bezier(0.45, 0, 0.55, 1) 0.5s;
-    } */
-    #test {
-      transition: ease 0.3s;
-    }
-    #test.edit {
-      background: black;
-      color: white;
-    }
   </style>
 </html>

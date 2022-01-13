@@ -1,43 +1,66 @@
 import {SvgPlus} from "../SvgPlus/4.js"
 import {GJObj, AccountTypes, mF, dF} from "../gj.js"
 import {THead, TBody, Tr, Td} from "../SvgPlus/Table.js"
+import {} from "../SvgPlus/input-plus.js"
 
 
 class ProfitAndLoss extends SvgPlus {
   constructor(el){
     super(el);
-    let head = this.createChild("div", {class: "head"});
-    head.innerHTML = `<date-input value = "${dF(this._from)}"></date-input> to <date-input class = "right" value = "${dF(this._to)}"></date-input>`
-    let inputs = this.getElementsByTagName("date-input");
-    inputs[0].addEventListener("change", () => {
-      this.from = inputs[0].value;
-      // this.render();
-    });
-    inputs[1].addEventListener("change", () => {
-      this.to = inputs[1].value;
-      // this.render();
-    });
-
-    this.from_input = inputs[0];
-    this.to_input = inputs[1];
-    this.table = this.createChild("table");
   }
 
   onconnect(){
+    this.create();
     let fireuser = document.getElementsByTagName("fire-user")[0];
-    this.load(fireuser)
+    this.load(fireuser);
+  }
+
+  create(){
+    if (!this._created) {
+      this.innerHTML = "";
+      let head = this.createChild("div", {class: "head"});
+      this.from_input = head.createChild('input-plus', {value: this.from, type: "date", class: "left"});
+      head.createChild("span", {content: "to"})
+      this.to_input = head.createChild('input-plus', {value: this.to, type: "date", class: "right"});
+      this.table = this.createChild("table");
+      this._created = true;
+
+      this.from_input.addEventListener("focusout", () => {
+        this.from = dF(this.from_input.value);
+        this.from_input.result = "";
+      })
+      this.to_input.addEventListener("focusout", () => {
+        this.to = dF(this.to_input.value);
+        this.to_input.result = "";
+      })
+
+      this.from = dF(this.from_input.value);
+      this.from_input.result = "";
+      this.to = dF(this.to_input.value);
+      this.to_input.result = "";
+    }
   }
 
   set from(value){
     this._from = value;
-    this.from_input.value = value;
-    this.render();
+    if (this._created) {
+      this.from_input.value = value;
+      this.render();
+    }
+  }
+  get from(){
+    return this._from;
   }
 
   set to(value) {
     this._to = value;
-    this.to_input.value = value;
-    this.render();
+    if (this._created) {
+      this.to_input.value = value;
+      this.render();
+    }
+  }
+  get to(){
+    return this._to;
   }
 
   async load(fireuser){

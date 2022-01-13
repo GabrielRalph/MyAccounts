@@ -117,26 +117,34 @@ class FireUser extends SvgPlus {
     return ref(DB, this.#users_ref + this.uid)
   }
 
+  push(value) {
+    return push(this.child(value));
+  }
+
+  child(value){
+    return child(this.userRef, value)
+  }
+
   get(value){
-    return get(child(this.userRef, value));
+    return get(this.child(value));
   }
   update(value, data){
-    return update(child(this.userRef, value), data)
+    return update(this.child(value), data)
   }
   set(value, data){
-    return set(child(this.userRef, value), data)
+    return set(this.child(value), data)
   }
   onChildChanged(value, callback){
-    onChildChanged(child(this.userRef, value), callback);
+    onChildChanged(this.child(value), callback);
   }
   onChildAdded(value, callback){
-    onChildAdded(child(this.userRef, value), callback);
+    onChildAdded(this.child(value), callback);
   }
   onChildRemoved(value, callback){
-    onChildRemoved(child(this.userRef, value), callback);
+    onChildRemoved(this.child(value), callback);
   }
   onValue(value, callback){
-    onValue(child(this.userRef, value), callback);
+    onValue(this.child(value), callback);
   }
 }
 

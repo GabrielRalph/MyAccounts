@@ -7,8 +7,6 @@
     <script type = "module" src = "../FireUser/fire-user.js"></script>
     <script type = "module" src = "../FireUser/user-details.js"></script>
     <script type = "module" src = "./profit-and-loss.js"></script>
-    <script type = "module" src = "./date-input.js"></script>
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cutive+Mono&display=swap" rel="stylesheet">
@@ -94,46 +92,35 @@
       display: block;
     }
 
-    date-input input{
-      background: transparent;
-      outline: none;
-      border: none;
-      font-family: 'Cutive Mono', monospace;
-      font-size: 1em;
-      width: 7em;
-      padding: 0;
+    input-plus.left .placeholder {
+      /* transform: translate(calc(-70% * var(--placeholder-factor)), 0) scale(calc(1 - 0.2 * var(--placeholder-factor))); */
+      text-align: right;
+      right: 0;
+      left: auto;
     }
-    date-input {
-      display: inline-block;
-      position: relative;
+    input-plus.left .placeholder span {
+      float: right;
     }
 
-    .right input{
+    input-plus.right .placeholder {
+      /* transform: translate(calc(60% * var(--placeholder-factor)), 0) scale(calc(1 - 0.2 * var(--placeholder-factor))); */
+    }
+    input-plus.left .placeholder span {
+      float: right;
+    }
+
+
+    input-plus.left input {
       text-align: right;
     }
-
-    date-input .output {
-      position: absolute;
-      top: 0;
-      left: 0;
-      user-select: none;
-      pointer-events: none;
-      z-index: -1;
-      transition: 0.2s ease-in;
-    }
-
-    date-input .selected {
-      transform: translate(-100%, -5%) scale(0.8);
+    input-plus.left > div {
+      margin-top: 0;
       text-align: right;
-      color: #10111388;
     }
-    date-input.right .selected {
-      transform: translate(100%, -5%) scale(0.8);
-      text-align: left;
+    input-plus.right > div {
+      margin-top: 0;
     }
-    date-input .output:not(.selected) {
-      /* color:transparent; */
-    }
+
 
     profit-and-loss table {
       border-collapse: collapse;
@@ -142,7 +129,12 @@
 
     profit-and-loss .head {
       text-align: center;
+      display: flex;
     }
+    profit-and-loss .head span{
+      padding: 0 0.5em;
+    }
+
     profit-and-loss thead tr:first-of-type {
       font-size: 1em;
     }

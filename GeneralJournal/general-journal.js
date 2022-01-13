@@ -2,7 +2,8 @@ import {SvgPlus} from "../SvgPlus/4.js"
 import {TBody, Tr, Td} from "../SvgPlus/Table.js"
 import {makeProps} from "../SvgPlus/props.js"
 import {EntryProps, dF, mF} from "../gj.js"
-
+import sheet from './gj-styles.css' assert { type: 'css' };
+SvgPlus.addCSSSStyleSheet(sheet);
 
 class JournalEntry extends TBody{
   constructor(key, data = {}){
@@ -143,10 +144,13 @@ class GeneralJournal extends SvgPlus{
     }
   }
 
-  onselect(entry){
-    console.log(entry.key);
+  select(entry){
+    const event = new Event("select");
+    event.selectedEntry = entry
+    this.dispatchEvent(event);
   }
-  ondblselect(entry){
+
+  dblselect(entry){
     console.log(entry.key);
   }
 
@@ -165,10 +169,10 @@ class GeneralJournal extends SvgPlus{
     } else {
       let entry = new JournalEntry(key, entryData);
       entry.onclick = () => {
-        this.onselect(entry);
+        this.select(entry);
       }
       entry.ondblclick = () => {
-        this.ondblselect(entry);
+        this.dblselect(entry);
       }
       this.entries[key] = entry;
       this.table.appendChild(entry);

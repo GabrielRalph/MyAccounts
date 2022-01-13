@@ -6,9 +6,7 @@
     <script type = "module" src = "../MyLoader/my-loader.js"></script>
     <script type = "module" src = "../FireUser/fire-user.js"></script>
     <script type = "module" src = "./general-journal.js"></script>
-    <script type = "module" src = "./EntryForm.js"></script>
-    <link href = "./gj-styles.css" rel="stylesheet" />
-    <link href = "../InputPlus/input.css" rel="stylesheet" />
+    <script type = "module" src = "./entry-form.js"></script>
   </head>
   <body>
     <fire-user users-ref = "generalJournal/users/">
@@ -29,14 +27,16 @@
           <div>
             Hey {{displayName}}
           </div>
-          <img src="{{photoURL}}" />
+          <a href = "/"><img src="{{photoURL}}" /></a>
           <div class = "btn" signout>
             Sign out
           </div>
         </div>
 
         <general-journal></general-journal>
-        <entry-form></entry-form>
+        <entry-form>
+
+        </entry-form>
       </template>
 
       <template name = "config">
@@ -74,131 +74,93 @@
       position: absolute;
       top: 2em;
       left: 0;
-      right: calc(30% + 1em);
+      right: 40%;
+      border-right: 1px solid black;
+      padding-right: 0.75em;
+      margin-right: 0.25em;
       bottom: 0;
     }
+
     entry-form {
-      width: 100%;
-      display: table;
-      overflow: scroll;
+      display: block;
       position: absolute;
       top: 2em;
-      left: 70%;
       right: 0;
       bottom: 0;
+      left: 60%;
+    }
+
+    entry-form div {
+      display: flex;
+      justify-content: space-evenly;
+    }
+
+    entry-form table {
+      width: 100%;
+    }
+    entry-form td:nth-of-type(2){
+      width: 30%;
     }
     entry-form td {
-      padding-top: 1em;
-    }
-    /* #open-filter {
+      padding-bottom: 1em;
     }
 
-    .mobile #control-bar {
-      bottom: 0;
-      font-size: 1.5em;
+    .user-frame {
+      position: relative;
     }
-    body:not(.mobile) #control-bar {
-      top: 0;
-      font-size: 1em;
-    }
-
-    #control-bar {
-      position: fixed;
-      left: 0;
-      right: 0;
-      padding: 0.5em;
-      background: #fff8;
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      z-index: 2;
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-    }
-    #control-bar span {
-      display: flex;
-      align-items: center;
-      border-radius: 3em;
-      padding: 0.2em 0.4em;
-    }
-
-
-    #sign-in {
-      cursor: pointer;
-    }
-
-    #journal {
-      z-index: 1;
-    }
-    #journal, #form{
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      overflow-y: scroll;
-      padding: calc(2em + (100vw - 100vmin) / 2.25);
-      padding-bottom: 6em;
-      padding-top: 2em;
-    }
-
-    .mobile #journal {
-      padding-bottom: 6em;
-      padding-top: 2em;
-    }
-    body:not(.mobile) #journal {
-      padding-bottom: 2em;
-      padding-top: 4em;
-    }
-
-    #form {
-      background: #fff2;
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      transition: 0.4s cubic-bezier(0.4, 0, 0.6, 1) opacity;
-      opacity: 0;
-      pointer-events: none;
-      padding: 2em;
-      z-index: 3;
-    }
-    .mobile #form {
-      font-size: max(1em, 42px);
-    }
-
-
     .icon {
       height: 1em;
       cursor: pointer;
-      vertical-align: middle;
-      border-radius: 1em;
     }
 
-
-    #form .icon {
-      height: 2em;
-      margin-top: 2em;
+    entry-form:not([changed]) .icon.tick {
+      display: none;
     }
 
-    #form .icon:nth-of-type(2n + 1){
-      float: right;
-      margin-left: 1.5em;
-    }
-    .placeholder p {
-      display: inline;
+    entry-form:not([changed]) .icon.tick{
+      display: none;
     }
 
-    .entry-form tr td:nth-of-type(2) {
-      width: 20%;
+    entry-form[key] .icon.add {
+      display: none;
     }
-    .entry-form td {
-      padding-top: 1em;
-    } */
+    entry-form[empty] .icon.cross {
+      display: none;
+    }
+
+    entry-form[invalid] .icon.add {
+      display: none;
+    }
+
+    entry-form:not([key]) .icon.tick {
+      display: none;
+    }
+    entry-form:not([key]) .icon.trash {
+      display: none;
+    }
   </style>
   <script>
     let fireuser = document.querySelector("body > fire-user");
 
     fireuser.addEventListener("user", async () => {
       let gj = document.getElementsByTagName("general-journal")[0];
+      let ej = document.getElementsByTagName("entry-form")[0];
+      gj.addEventListener("select", (e) => {
+        ej.original = e.selectedEntry.data;
+        ej.setKey(e.selectedEntry.key);
+      })
+      ej.addEventListener("update", (e) => {
+        let key = e.key;
+        let data = e.data;
+
+        if (key == null) {
+          key = fireuser.push("journal").key
+        }
+        let update = {};
+        update[key] = data;
+        fireuser.update("journal", update);
+      })
+
       let update = (sc) => {
         gj.addEntry(sc.key, sc.val());
         fireuser.loaded = true;
