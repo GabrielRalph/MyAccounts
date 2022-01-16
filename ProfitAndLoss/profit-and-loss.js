@@ -68,6 +68,7 @@ class ProfitAndLoss extends SvgPlus {
     this.gj = new GJObj(gj.val());
 
     this.accounts = (await fireuser.get("accounts")).val();
+    if (this.accounts == null) this.accounts = {};
     this.names = AccountTypes.allNames();
 
     this.render();

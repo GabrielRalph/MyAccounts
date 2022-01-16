@@ -72,9 +72,12 @@
 
     user.addEventListener("leave", () => {
       user.loaded = true;
+      console.log("no usr");
+
     })
 
     user.addEventListener("user", async () => {
+      console.log("usr");
       let data = (await user.get("details")).val();
       setFormData(data);
       user.loaded = true;

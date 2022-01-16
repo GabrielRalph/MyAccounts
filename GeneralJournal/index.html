@@ -148,10 +148,12 @@
     fireuser.addEventListener("user", async () => {
       let gj = document.getElementsByTagName("general-journal")[0];
       let ej = document.getElementsByTagName("entry-form")[0];
+
       gj.addEventListener("select", (e) => {
         ej.original = e.selectedEntry.data;
         ej.setKey(e.selectedEntry.key);
       })
+
       ej.addEventListener("update", (e) => {
         let key = e.key;
         let data = e.data;
@@ -168,9 +170,15 @@
         gj.addEntry(sc.key, sc.val());
         fireuser.loaded = true;
       }
+
       fireuser.onChildAdded("journal", update);
       fireuser.onChildChanged("journal", update);
       fireuser.onChildRemoved("journal", (sc) => gj.removeEntry(sc.key));
+
+      let data = (await fireuser.get("journal")).val();
+      if (data == null) {
+        fireuser.loaded = true;
+      }
     })
 
   </script>

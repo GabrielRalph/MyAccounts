@@ -1,5 +1,16 @@
 import {SvgPlus} from "../SvgPlus/4.js"
 
+const DefaultUser = {
+  first_name: "",
+  last_name: "",
+  city: "",
+  postcode: "",
+  address: "",
+  number: "",
+  email: "",
+  email: "",
+}
+
 class UserDetails extends SvgPlus {
   #fields = [];
   onconnect(){
@@ -27,6 +38,7 @@ class UserDetails extends SvgPlus {
   }
 
   setDetailsData(value){
+    if (value == null) value = DefaultUser;
     this.innerHTML = "";
     let name = `${value.first_name} ${value.last_name}`;
     let address = `${value.city}, ${value.postcode}<br/> ${value.address}<br/>`
@@ -39,8 +51,10 @@ class UserDetails extends SvgPlus {
 
     let opt = this.createChild("div", {class: "optionals"})
     for (let field of this.#fields) {
-      let cont = `${field.toUpperCase()}: ${value[field]}`
-      opt.createChild("div", {content: cont})
+      if (field in value && value[field]) {
+        let cont = `${field.toUpperCase()}: ${value[field]}`
+        opt.createChild("div", {content: cont})
+      }
     }
   }
 

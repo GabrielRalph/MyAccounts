@@ -127,11 +127,12 @@ function getTime(value, def = null){
   return value;
 }
 
-function mF(money) {
+function mF(money, round = 2) {
   if (Number.isNaN(money) || !money) {
     return "-"
   }
-  return "$" + Math.round(money);
+  let fac = Math.pow(10, round)
+  return "$" + Math.round(money*fac)/fac;
 }
 
 function dF(date){
