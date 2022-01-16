@@ -60,6 +60,10 @@
     let profitAndLoss = () => {return document.querySelector("body > fire-user > div.user-frame > profit-and-loss")}
     let userDetails = () => {return document.querySelector("body > fire-user > div.user-frame > user-details")}
 
+    fireAuth.addEventListener("leave", () => {
+      fireAuth.loaded = true;
+    })
+
     fireAuth.addEventListener("user", () => {
       let pl = false;
       let ud = false;

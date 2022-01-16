@@ -70,6 +70,10 @@
   <script>
     let user = document.querySelector("body > fire-user");
 
+    user.addEventListener("leave", () => {
+      user.loaded = true;
+    })
+
     user.addEventListener("user", async () => {
       let data = (await user.get("details")).val();
       setFormData(data);
