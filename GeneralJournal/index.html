@@ -141,6 +141,9 @@
   </style>
   <script>
     let fireuser = document.querySelector("body > fire-user");
+    fireAuth.addEventListener("leave", () => {
+      fireAuth.loaded = true;
+    })
 
     fireuser.addEventListener("user", async () => {
       let gj = document.getElementsByTagName("general-journal")[0];
