@@ -5,6 +5,17 @@ import {TBody, Tr, Td} from "../SvgPlus/Table.js"
 import {makeProps} from "../SvgPlus/props.js"
 import {EntryProps, dF} from "../gj.js"
 
+const SuggestionCats = {
+  "description": "names"
+}
+function getSS (val) {
+  let res = ""
+  if (val in SuggestionCats) {
+    res = SuggestionCats[val];
+  }
+  return res;
+}
+
 class EntryForm extends SvgPlus{
   constructor(el) {
     super(el);
@@ -133,10 +144,12 @@ class EntryForm extends SvgPlus{
     for (let row of this.layout) {
       let c = 0;
       for (let elem of row) {
+
         let type = EntryProps[elem].type;
         let input = body[r][c].createChild("input-plus", {
           type: type,
-          placeholder: elem
+          placeholder: elem,
+          "suggestion-category": getSS(elem)
         });
         input.addEventListener("change", (nv) => {
           this.change();

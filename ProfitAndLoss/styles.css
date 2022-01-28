@@ -1,0 +1,72 @@
+user-details {
+  margin-bottom: 3em;
+  display: block;
+}
+
+.head {
+  align-items: center;
+}
+.head input-plus input {
+  padding: 0.25em;
+  width: calc(100% - 2 * 0.25em);
+}
+
+input-plus.left .placeholder {
+  text-align: right;
+  right: 0;
+  left: auto;
+}
+input-plus.left .placeholder span {
+  float: right;
+}
+input-plus.left .placeholder span {
+  float: right;
+}
+
+input-plus.left input {
+  text-align: right;
+}
+input-plus.left > div {
+  margin-top: 0;
+  text-align: right;
+}
+input-plus.right > div {
+  margin-top: 0;
+}
+
+profit-and-loss table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+profit-and-loss .head {
+  text-align: center;
+  display: flex;
+}
+profit-and-loss .head span{
+  padding: 0 0.5em;
+}
+
+profit-and-loss thead tr:first-of-type {
+  font-size: 1em;
+}
+profit-and-loss thead tr:last-of-type td {
+  padding-bottom: 1em;
+}
+
+profit-and-loss tbody td:nth-of-type(n+2) {
+  padding-left: 1em;
+}
+
+profit-and-loss tbody td:last-of-type {
+  text-align: right;
+}
+
+profit-and-loss tbody tr:last-of-type td{
+  padding-bottom:0.5em;
+  border-bottom: 1px solid black;
+}
+
+profit-and-loss tbody:nth-of-type(n+2) tr:first-of-type td{
+  padding-top:0.5em;
+}

@@ -3,7 +3,6 @@ import {GJObj, AccountTypes, mF, dF} from "../gj.js"
 import {THead, TBody, Tr, Td} from "../SvgPlus/Table.js"
 import {} from "../SvgPlus/input-plus.js"
 
-
 class ProfitAndLoss extends SvgPlus {
   constructor(el){
     super(el);
@@ -25,13 +24,29 @@ class ProfitAndLoss extends SvgPlus {
       this.table = this.createChild("table");
       this._created = true;
 
-      this.from_input.addEventListener("focusout", () => {
+      let submit_from = () => {
         this.from = dF(this.from_input.value);
         this.from_input.result = "";
-      })
-      this.to_input.addEventListener("focusout", () => {
+      }
+      let submit_to = () => {
         this.to = dF(this.to_input.value);
         this.to_input.result = "";
+      }
+
+      // this.from_input.addEventListener("blur", () => {
+      //   alert("resize")
+      // })
+      this.from_input.addEventListener("focusout", submit_from);
+      this.to_input.addEventListener("focusout", submit_to);
+      this.from_input.addEventListener("keydown", (e) => {
+        if (e.key == "Enter") {
+          // alert("blur")
+          document.activeElement.blur();
+          // this.from_input.blur();
+        }
+      })
+      this.to_input.addEventListener("keydown", (e) => {
+        if (e.key == "Enter") submit_to();
       })
 
       this.from = dF(this.from_input.value);

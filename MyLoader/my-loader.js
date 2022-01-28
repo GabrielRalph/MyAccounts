@@ -1,7 +1,4 @@
 import {SvgPlus, SvgPath, Vector} from "../SvgPlus/4.js"
-import sheet from './styles.css' assert { type: 'css' };
-SvgPlus.addCSSSStyleSheet(sheet);
-
 
 function love_x(theta, rad = 1) {
   return rad * 16 * Math.pow(Math.sin(theta), 3)
@@ -15,19 +12,19 @@ function love(theta, rad) {
 
 
 class LoveHeart extends SvgPath {
-  #res = 0.05;
+  _res = 0.05;
 
   set resolution(value) {
     value = parseFloat(value);
     if (Number.isNaN(value)) value = 0.01;
-    this.#res = value;
+    this._res = value;
   }
 
   draw(rad = 1) {
     rad = rad / 32;
     this.d.clear();
     this.M(love(0, rad).mul(new Vector(1, -1)));
-    for (let i = this.#res; i < 2*Math.PI; i+= this.#res) {
+    for (let i = this._res; i < 2*Math.PI; i+= this._res) {
       this.L(love(i, rad).mul(new Vector(1, -1)))
     }
     this.Z();

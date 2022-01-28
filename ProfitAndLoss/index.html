@@ -2,17 +2,35 @@
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width; initial-scale=1.0;" />
     <title>Profit and Loss</title>
+
+    <link rel = "stylesheet" href = "../MyLoader/styles.css"/>
     <script type = "module" src = "../MyLoader/my-loader.js"></script>
+
+    <link rel = "stylesheet" href = "../FireUser/styles.css"/>
     <script type = "module" src = "../FireUser/fire-user.js"></script>
     <script type = "module" src = "../FireUser/user-details.js"></script>
+
+    <link rel = "stylesheet" href = "../SvgPlus/input-plus.css"/>
+    <link rel = "stylesheet" href = "./styles.css"/>
     <script type = "module" src = "./profit-and-loss.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.5/jspdf.debug.js"></script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cutive+Mono&display=swap" rel="stylesheet">
   </head>
   <body>
-    <fire-user users-ref = "generalJournal/users/" load-delay = "3000">
+    <fire-user users-ref = "generalJournal/users/" load-delay = "3000" config = '{
+        "apiKey": "AIzaSyAwKRqxNdoO05hLlGZwb5AgWugSBzruw6A",
+        "authDomain": "myaccounts-4a6c7.firebaseapp.com",
+        "databaseURL": "https://myaccounts-4a6c7-default-rtdb.asia-southeast1.firebasedatabase.app",
+        "projectId": "myaccounts-4a6c7",
+        "storageBucket": "myaccounts-4a6c7.appspot.com",
+        "messagingSenderId": "678570989696",
+        "appId": "1:678570989696:web:ca70c09476d4c5f627ee65"}'>
+
       <div name = "loader">
         <my-loader></my-loader>
       </div>
@@ -62,11 +80,13 @@
 
     fireAuth.addEventListener("leave", () => {
       fireAuth.loaded = true;
+
     })
 
     fireAuth.addEventListener("user", () => {
       let pl = false;
       let ud = false;
+
       profitAndLoss().addEventListener("load", () => {
         pl = true;
         fireAuth.loaded = ud;
@@ -80,90 +100,24 @@
 
   <style>
     body {
-      margin: 2em;
-      font-size: 12pt;
       font-family: 'Cutive Mono', monospace;
+      font-size: 1.5vw;
+      margin: 2em;
+      /* -webkit-text-size-adjust: 100%; */
+      /* text-size-adjust: 100%; */
     }
+
+    @page {
+      margin: 0mm;
+    }
+
+    /* div {
+
+    } */
 
     h1 {
       margin-bottom: 1em;
       margin-top: 0;
-    }
-
-
-    user-details {
-      margin-bottom: 3em;
-      display: block;
-    }
-
-    input-plus.left .placeholder {
-      /* transform: translate(calc(-70% * var(--placeholder-factor)), 0) scale(calc(1 - 0.2 * var(--placeholder-factor))); */
-      text-align: right;
-      right: 0;
-      left: auto;
-    }
-    input-plus.left .placeholder span {
-      float: right;
-    }
-
-    input-plus.right .placeholder {
-      /* transform: translate(calc(60% * var(--placeholder-factor)), 0) scale(calc(1 - 0.2 * var(--placeholder-factor))); */
-    }
-    input-plus.left .placeholder span {
-      float: right;
-    }
-
-
-    input-plus.left input {
-      text-align: right;
-    }
-    input-plus.left > div {
-      margin-top: 0;
-      text-align: right;
-    }
-    input-plus.right > div {
-      margin-top: 0;
-    }
-
-
-    profit-and-loss table {
-      border-collapse: collapse;
-      width: 100%;
-    }
-
-    profit-and-loss .head {
-      text-align: center;
-      display: flex;
-    }
-    profit-and-loss .head span{
-      padding: 0 0.5em;
-    }
-
-    profit-and-loss thead tr:first-of-type {
-      font-size: 1em;
-    }
-    profit-and-loss thead tr:last-of-type td {
-      padding-bottom: 1em;
-    }
-
-    profit-and-loss tbody td:nth-of-type(n+2) {
-      padding-left: 1em;
-    }
-
-    profit-and-loss tbody td:last-of-type {
-      text-align: right;
-    }
-    /* profit-and-loss tbody tr:last-of-type td:nth-of-type(2){
-      text-align:right;
-    } */
-
-    profit-and-loss tbody tr:last-of-type td{
-      padding-bottom:0.5em;
-      border-bottom: 1px solid black;
-    }
-
-    profit-and-loss tbody:nth-of-type(n+2) tr:first-of-type td{
-      padding-top:0.5em;
     }
   </style>
 </html>

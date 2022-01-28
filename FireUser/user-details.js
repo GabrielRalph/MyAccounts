@@ -11,8 +11,15 @@ const DefaultUser = {
   email: "",
 }
 
+let log = document.getElementById("log")
+window.onerror = (e) => {
+  alert(e);
+  fireUser.loaded = true;
+  log.innerHTML += e;
+}
+
 class UserDetails extends SvgPlus {
-  #fields = [];
+  _fields = [];
   onconnect(){
     let fireUser = document.getElementsByTagName("fire-user")[0];
     let loaded = false;
@@ -31,9 +38,9 @@ class UserDetails extends SvgPlus {
   set fields(text){
     if (typeof text === "string" && text.length > 0) {
       let list = text.split(" ");
-      this.#fields = list;
+      this._fields = list;
     } else {
-      this.#fields = [];
+      this._fields = [];
     }
   }
 
@@ -50,7 +57,7 @@ class UserDetails extends SvgPlus {
     row.createChild("span", {content: contact})
 
     let opt = this.createChild("div", {class: "optionals"})
-    for (let field of this.#fields) {
+    for (let field of this._fields) {
       if (field in value && value[field]) {
         let cont = `${field.toUpperCase()}: ${value[field]}`
         opt.createChild("div", {content: cont})

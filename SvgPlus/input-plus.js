@@ -1,7 +1,5 @@
 import {SvgPlus} from "../SvgPlus/4.js"
 import {Types} from "../SvgPlus/props.js"
-import sheet from './input-plus.css' assert { type: 'css' };
-SvgPlus.addCSSSStyleSheet(sheet);
 
 function dF(date){
   if (date == -1) return "";
@@ -13,6 +11,7 @@ function dF(date){
 
 class InputPlus extends SvgPlus{
   _type = "string";
+  _suggestion_category = null;
   constructor(el){
     super(el);
   }
@@ -48,8 +47,7 @@ class InputPlus extends SvgPlus{
     })
 
     this._input.addEventListener("keyup", (event) => {
-      const cevent = new Event("change");
-      this.dispatchEvent(cevent);
+      this._afterChange()
     });
 
     let meta = false;
@@ -148,6 +146,12 @@ class InputPlus extends SvgPlus{
     this.dispatchEvent(event);
     return allow;
   }
+  _afterChange(){
+    this._check_suggestions();
+
+    const cevent = new Event("change");
+    this.dispatchEvent(cevent);
+  }
 
   _focusin() {
     if (this.value.length == 0) {
@@ -168,6 +172,16 @@ class InputPlus extends SvgPlus{
     }
     const event = new Event("focusout");
     this.dispatchEvent(event);
+  }
+
+  _check_suggestions(){
+    console.log('xx');
+    let suggestion = "";
+    try {
+      suggestion = document.suggestions.search(this.value, this.suggestion_category);
+    } catch {}
+    this.suggestion = suggestion;
+    console.log(suggestion);
   }
 
   set value(value){
@@ -196,6 +210,14 @@ class InputPlus extends SvgPlus{
   }
   get placeholder(){
     return this._placeholder_value ? this._placeholder_value : "";
+  }
+
+  set ["suggestion-category"](value){
+    if (!value) value = null;
+    this._suggestion_category = value;
+  }
+  get suggestion_category(){
+    return this._suggestion_category;
   }
 
   set suggestion(value){

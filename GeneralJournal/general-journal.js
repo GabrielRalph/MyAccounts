@@ -2,8 +2,6 @@ import {SvgPlus} from "../SvgPlus/4.js"
 import {TBody, Tr, Td} from "../SvgPlus/Table.js"
 import {makeProps} from "../SvgPlus/props.js"
 import {EntryProps, dF, mF} from "../gj.js"
-import sheet from './gj-styles.css' assert { type: 'css' };
-SvgPlus.addCSSSStyleSheet(sheet);
 
 class JournalEntry extends TBody{
   constructor(key, data = {}){
@@ -69,7 +67,7 @@ class JournalEntry extends TBody{
 }
 
 class GeneralJournal extends SvgPlus{
-  #accountNames = {};
+  _accountNames = {};
   constructor(el) {
     super(el);
     this.entries = {};
@@ -83,7 +81,7 @@ class GeneralJournal extends SvgPlus{
   clear(){
     this.innerHTML = "";
     this.entries = {};
-    this.#accountNames = {};
+    this._accountNames = {};
   }
 
   set from(date){
@@ -115,7 +113,7 @@ class GeneralJournal extends SvgPlus{
   }
 
   get accountNames(){
-    return Object.keys(this.#accountNames);
+    return Object.keys(this._accountNames);
   }
 
   filter() {
@@ -161,7 +159,7 @@ class GeneralJournal extends SvgPlus{
     if (key in this.entries) {
       //remove old account names
       for (let name of this.entries[key].accountNames) {
-        delete this.#accountNames[name];
+        delete this._accountNames[name];
       }
       this.entries[key].data = entryData;
 
@@ -181,7 +179,7 @@ class GeneralJournal extends SvgPlus{
 
     //add acount names
     for (let name of this.entries[key].accountNames) {
-      this.#accountNames[name] = true;
+      this._accountNames[name] = true;
     }
     this.sort(this.sortKey);
   }
@@ -193,7 +191,7 @@ class GeneralJournal extends SvgPlus{
 
       //remove old account names
       for (let name of entry.accountNames) {
-        delete this.#accountNames[name];
+        delete this._accountNames[name];
       }
       this.table.removeChild(entry);
     }

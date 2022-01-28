@@ -3,13 +3,30 @@
   <head>
     <meta charset="utf-8">
     <title>General Journal</title>
+    <script src = "../SvgPlus/Suggestions.js"></script>
+
+    <link rel = "stylesheet" href = "../MyLoader/styles.css"/>
     <script type = "module" src = "../MyLoader/my-loader.js"></script>
+
+    <link rel = "stylesheet" href = "../FireUser/styles.css"/>
     <script type = "module" src = "../FireUser/fire-user.js"></script>
+
+    <link rel = "stylesheet" href = "./gj-styles.css"/>
     <script type = "module" src = "./general-journal.js"></script>
+
+    <link rel = "stylesheet" href = "../SvgPlus/input-plus.css"/>
     <script type = "module" src = "./entry-form.js"></script>
   </head>
   <body>
-    <fire-user users-ref = "generalJournal/users/">
+    <fire-user users-ref = "generalJournal/users/" config = '{
+        "apiKey": "AIzaSyAwKRqxNdoO05hLlGZwb5AgWugSBzruw6A",
+        "authDomain": "myaccounts-4a6c7.firebaseapp.com",
+        "databaseURL": "https://myaccounts-4a6c7-default-rtdb.asia-southeast1.firebasedatabase.app",
+        "projectId": "myaccounts-4a6c7",
+        "storageBucket": "myaccounts-4a6c7.appspot.com",
+        "messagingSenderId": "678570989696",
+        "appId": "1:678570989696:web:ca70c09476d4c5f627ee65"
+      }'>
       <div name = "loader">
         <my-loader></my-loader>
       </div>
@@ -38,20 +55,69 @@
 
         </entry-form>
       </template>
-
-      <template name = "config">
-        {
-          "apiKey": "AIzaSyAwKRqxNdoO05hLlGZwb5AgWugSBzruw6A",
-          "authDomain": "myaccounts-4a6c7.firebaseapp.com",
-          "databaseURL": "https://myaccounts-4a6c7-default-rtdb.asia-southeast1.firebasedatabase.app",
-          "projectId": "myaccounts-4a6c7",
-          "storageBucket": "myaccounts-4a6c7.appspot.com",
-          "messagingSenderId": "678570989696",
-          "appId": "1:678570989696:web:ca70c09476d4c5f627ee65"
-        }
-      </template>
     </fire-user>
   </body>
+
+  <script>
+    let names = [
+      "Frank",
+      "Robert",
+      "John",
+      "Gabriel",
+      "phrase",
+      "holiday",
+      "degenerate",
+    ]
+    for (let name of names) {
+      document.suggestions.add(name, "names")
+    }
+
+
+    let fireuser = document.querySelector("body > fire-user");
+    fireuser.addEventListener("leave", () => {
+      console.log("user left");
+      fireuser.loaded = true;
+    })
+
+    fireuser.addEventListener("user", async () => {
+      console.log("user connected");
+
+      let gj = document.getElementsByTagName("general-journal")[0];
+      let ej = document.getElementsByTagName("entry-form")[0];
+
+      gj.addEventListener("select", (e) => {
+        ej.original = e.selectedEntry.data;
+        ej.setKey(e.selectedEntry.key);
+      })
+
+      ej.addEventListener("update", (e) => {
+        let key = e.key;
+        let data = e.data;
+
+        if (key == null) {
+          key = fireuser.push("journal").key
+        }
+        let update = {};
+        update[key] = data;
+        fireuser.update("journal", update);
+      })
+
+      let update = (sc) => {
+        gj.addEntry(sc.key, sc.val());
+        fireuser.loaded = true;
+      }
+
+      fireuser.onChildAdded("journal", update);
+      fireuser.onChildChanged("journal", update);
+      fireuser.onChildRemoved("journal", (sc) => gj.removeEntry(sc.key));
+
+      let data = (await fireuser.get("journal")).val();
+      if (data == null) {
+        fireuser.loaded = true;
+      }
+    })
+
+  </script>
 
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Cutive+Mono&display=swap');
@@ -139,47 +205,4 @@
       display: none;
     }
   </style>
-  <script>
-    let fireuser = document.querySelector("body > fire-user");
-    fireuser.addEventListener("leave", () => {
-      fireuser.loaded = true;
-    })
-
-    fireuser.addEventListener("user", async () => {
-      let gj = document.getElementsByTagName("general-journal")[0];
-      let ej = document.getElementsByTagName("entry-form")[0];
-
-      gj.addEventListener("select", (e) => {
-        ej.original = e.selectedEntry.data;
-        ej.setKey(e.selectedEntry.key);
-      })
-
-      ej.addEventListener("update", (e) => {
-        let key = e.key;
-        let data = e.data;
-
-        if (key == null) {
-          key = fireuser.push("journal").key
-        }
-        let update = {};
-        update[key] = data;
-        fireuser.update("journal", update);
-      })
-
-      let update = (sc) => {
-        gj.addEntry(sc.key, sc.val());
-        fireuser.loaded = true;
-      }
-
-      fireuser.onChildAdded("journal", update);
-      fireuser.onChildChanged("journal", update);
-      fireuser.onChildRemoved("journal", (sc) => gj.removeEntry(sc.key));
-
-      let data = (await fireuser.get("journal")).val();
-      if (data == null) {
-        fireuser.loaded = true;
-      }
-    })
-
-  </script>
 </html>

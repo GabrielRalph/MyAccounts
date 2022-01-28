@@ -151,9 +151,9 @@ function dep_func(date_n, date_0, lifespan) {
 
 
 class GJObj {
-  #entries = [];
-  #entries_table = {};
-  #names = {};
+  _entries = [];
+  _entries_table = {};
+  _names = {};
 
   constructor(entries) {
     for (let key in entries) {
@@ -162,7 +162,7 @@ class GJObj {
   }
 
   containsKey(key){
-    return key in this.#entries_table;
+    return key in this._entries_table;
   }
 
   addEntry(entry, key) {
@@ -170,15 +170,15 @@ class GJObj {
       let e = {key: key};
       addProps(EntryProps, entry, e);
 
-      this.#names[e["credit-acc"]]  = true;
-      this.#names[e["debit-acc"]]  = true;
-      this.#entries.push(e);
-      this.#entries_table[key] = e;
+      this._names[e["credit-acc"]]  = true;
+      this._names[e["debit-acc"]]  = true;
+      this._entries.push(e);
+      this._entries_table[key] = e;
     }
   }
 
   get accountNames(){
-    return Object.keys(this.#names);
+    return Object.keys(this._names);
   }
 
   getDepreciation(entry, from = 0, to = null) {
@@ -207,7 +207,7 @@ class GJObj {
       "Accumulated Depreciation": 0,
       "Depreciation Expenses": 0,
     };
-    for (let entry of this.#entries) {
+    for (let entry of this._entries) {
       let dacc = entry["debit-acc"];
       let cacc = entry["credit-acc"];
 

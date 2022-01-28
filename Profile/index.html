@@ -3,7 +3,10 @@
   <head>
     <meta charset="utf-8">
     <title>Profile</title>
+    <link rel = "stylesheet" href = "../MyLoader/styles.css"/>
     <script type = "module" src = "../MyLoader/my-loader.js"></script>
+    
+    <link rel = "stylesheet" href = "../FireUser/styles.css"/>
     <script type = "module" src = "../FireUser/fire-user.js"></script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -11,7 +14,15 @@
     <link href="https://fonts.googleapis.com/css2?family=Cutive+Mono&display=swap" rel="stylesheet">
   </head>
   <body>
-    <fire-user users-ref = "generalJournal/users/" load-delay = "2000">
+    <fire-user users-ref = "generalJournal/users/" config = '{
+        "apiKey": "AIzaSyAwKRqxNdoO05hLlGZwb5AgWugSBzruw6A",
+        "authDomain": "myaccounts-4a6c7.firebaseapp.com",
+        "databaseURL": "https://myaccounts-4a6c7-default-rtdb.asia-southeast1.firebasedatabase.app",
+        "projectId": "myaccounts-4a6c7",
+        "storageBucket": "myaccounts-4a6c7.appspot.com",
+        "messagingSenderId": "678570989696",
+        "appId": "1:678570989696:web:ca70c09476d4c5f627ee65"
+      }'>
       <div name = "loader">
         <my-loader></my-loader>
       </div>
@@ -54,20 +65,10 @@
           </div>
         </form>
       </template>
-      <template name = "config">
-        {
-          "apiKey": "AIzaSyAwKRqxNdoO05hLlGZwb5AgWugSBzruw6A",
-          "authDomain": "myaccounts-4a6c7.firebaseapp.com",
-          "databaseURL": "https://myaccounts-4a6c7-default-rtdb.asia-southeast1.firebasedatabase.app",
-          "projectId": "myaccounts-4a6c7",
-          "storageBucket": "myaccounts-4a6c7.appspot.com",
-          "messagingSenderId": "678570989696",
-          "appId": "1:678570989696:web:ca70c09476d4c5f627ee65"
-        }
-      </template>
     </fire-user>
   </body>
   <script>
+
     let user = document.querySelector("body > fire-user");
 
     user.addEventListener("leave", () => {

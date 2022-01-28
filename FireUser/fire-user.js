@@ -1,28 +1,26 @@
-import sheet from './styles.css' assert { type: 'css' };
-SvgPlus.addCSSSStyleSheet(sheet);
-
 import {SvgPlus} from "../SvgPlus/4.js"
 import {initializeApp} from 'https://www.gstatic.com/firebasejs/9.2.0/firebase-app.js'
 import {getAuth, signInWithRedirect, GoogleAuthProvider, onAuthStateChanged} from 'https://www.gstatic.com/firebasejs/9.2.0/firebase-auth.js'
 import {getDatabase, child, push, ref, update, get, onValue, onChildAdded, onChildChanged, onChildRemoved, set} from 'https://www.gstatic.com/firebasejs/9.2.0/firebase-database.js'
 
-let DBL_CHECK = 0;
 
 let APP = null;
 let DB = null;
 let AUTH = null;
 
+let fireUser = null;
 class FireUser extends SvgPlus {
-  #templates = {}
-  #users_ref = "";
-  #faded = false;
+  _templates = {}
+  _users_ref = "";
+  _faded = false;
   constructor(el = "div"){
-    if (DBL_CHECK !== 0) throw "Only one fire user per document"
-    DBL_CHECK = 1;
+    if (fireUser !== null) throw "Only one fire user per document"
     super(el);
+    fireUser = this;
+
 
     for (let el of this.children) {
-      this.#templates[el.getAttribute("name")] = el.innerHTML;
+      this._templates[el.getAttribute("name")] = el.innerHTML;
     }
 
     this.innerHTML = "";
@@ -31,10 +29,10 @@ class FireUser extends SvgPlus {
     });
     this.loader = this.createChild("div", {
       class: "loader",
-      content: this.#templates.loader,
+      content: this._templates.loader,
     })
 
-    let config = this.#templates.config;
+    let config = this.getAttribute("config");
     config = JSON.parse(config);
 
     APP = initializeApp(config);
@@ -43,9 +41,9 @@ class FireUser extends SvgPlus {
 
     onAuthStateChanged(AUTH, (userData) => {
       if (userData == null) {
-        this.#onleave(userData);
+        this._onleave(userData);
       } else {
-        this.#onuser(userData);
+        this._onuser(userData);
       }
     });
   }
@@ -63,18 +61,18 @@ class FireUser extends SvgPlus {
     if (!value && this.contains(this.loader)){
       this.removeChild(this.loader);
     }
-    this.#faded = value;
+    this._faded = value;
   }
 
   set loaded(value){
-    if (this.#faded != value) {
+    if (this._faded != value) {
       this.fade(value);
     }
   }
 
-  #onuser(user){
+  _onuser(user){
     this.user = user;
-    this.userFrame.innerHTML = this.#templates.user.replace(/{{([^}]*)}}/g, (a, b) => {
+    this.userFrame.innerHTML = this._templates.user.replace(/{{([^}]*)}}/g, (a, b) => {
       return user[b];
     });
     let signouts = this.querySelectorAll('[signout=""]');
@@ -83,9 +81,9 @@ class FireUser extends SvgPlus {
     this.dispatchEvent(event);
   }
 
-  #onleave(){
+  _onleave(){
     this.user = null;
-    this.userFrame.innerHTML = this.#templates["no-user"];
+    this.userFrame.innerHTML = this._templates["no-user"];
     let signins = this.querySelectorAll('[signin=""]');
     for (let el of signins) el.onclick = () => {this.signIn()};
     const event = new Event("leave");
@@ -93,8 +91,10 @@ class FireUser extends SvgPlus {
   }
 
   signIn(){
+    log.innerHTML += 'xxx';
     const provider = new GoogleAuthProvider();
     signInWithRedirect(AUTH, provider);
+
   }
 
   signOut(){
@@ -102,7 +102,7 @@ class FireUser extends SvgPlus {
   }
 
   set "users-ref"(value){
-    this.#users_ref = value;
+    this._users_ref = value;
   }
 
   get database(){
@@ -114,7 +114,7 @@ class FireUser extends SvgPlus {
   }
 
   get userRef(){
-    return ref(DB, this.#users_ref + this.uid)
+    return ref(DB, this._users_ref + this.uid)
   }
 
   push(value) {
@@ -149,4 +149,5 @@ class FireUser extends SvgPlus {
 }
 
 SvgPlus.defineHTMLElement(FireUser);
+
 export {DB, child, push, ref, update, get, onChildAdded, onChildChanged, onChildRemoved, set}
