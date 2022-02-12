@@ -91,7 +91,6 @@ class FireUser extends SvgPlus {
   }
 
   signIn(){
-    log.innerHTML += 'xxx';
     const provider = new GoogleAuthProvider();
     signInWithRedirect(AUTH, provider);
 

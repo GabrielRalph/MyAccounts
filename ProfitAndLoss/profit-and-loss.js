@@ -33,16 +33,11 @@ class ProfitAndLoss extends SvgPlus {
         this.to_input.result = "";
       }
 
-      // this.from_input.addEventListener("blur", () => {
-      //   alert("resize")
-      // })
       this.from_input.addEventListener("focusout", submit_from);
       this.to_input.addEventListener("focusout", submit_to);
       this.from_input.addEventListener("keydown", (e) => {
         if (e.key == "Enter") {
-          // alert("blur")
           document.activeElement.blur();
-          // this.from_input.blur();
         }
       })
       this.to_input.addEventListener("keydown", (e) => {
