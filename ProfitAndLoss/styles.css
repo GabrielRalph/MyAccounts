@@ -5,10 +5,23 @@ user-details {
 
 .head {
   align-items: center;
+  margin-bottom: 1em;
 }
 .head input-plus input {
   padding: 0.25em;
   width: calc(100% - 2 * 0.25em);
+}
+
+table {
+  counter-reset: tcat;
+}
+tbody tr:last-of-type td:nth-last-of-type(3n){
+  text-align: right;
+}
+
+tbody tr:last-of-type td:last-of-type::before {
+  counter-increment: tcat;
+  content: "(" counter(tcat, upper-alpha) ")";
 }
 
 input-plus.left .placeholder {

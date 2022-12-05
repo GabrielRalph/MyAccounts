@@ -48,6 +48,8 @@ class Tr extends SvgPlus{
     }
   }
 }
+
+
 class THead extends SvgPlus{
   constructor(r, c) {
     super('THEAD');
@@ -56,6 +58,35 @@ class THead extends SvgPlus{
       this.appendChild(this[row])
     }
   }
+
+  set array(arr){
+    let i = 0;
+    for (let row of this.children) {
+      let j = 0;
+      for (let cell of row.children) {
+        try {
+          let value = arr[i][j];
+          cell.value = value;
+        } catch (e) {}
+        j++;
+      }
+      i++;
+    }
+  }
+
+  static fromArray(arr) {
+    let thead = null;
+    try {
+      let r = arr.length;
+      let c = arr[0].length;
+      let thead = new THead(r, c);
+      thead.array = arr;
+    } catch (e) {
+      thead = null;
+    }
+    return thead;
+  }
+
 }
 class TBody extends SvgPlus{
   constructor(r, c) {
@@ -64,6 +95,35 @@ class TBody extends SvgPlus{
       this[row] = new Tr(c);
       this.appendChild(this[row])
     }
+  }
+
+  set array(arr){
+    let i = 0;
+    for (let row of this.children) {
+      let j = 0;
+      for (let cell of row.children) {
+        try {
+          let value = arr[i][j];
+          cell.value = value;
+        } catch (e) {}
+        j++;
+      }
+      i++;
+    }
+  }
+
+  static fromArray(arr) {
+    let tbody = null;
+    try {
+      let r = arr.length;
+      let c = arr[0].length;
+      tbody = new TBody(r, c);
+      tbody.array = arr;
+    } catch (e) {
+      console.log("from array error");
+      tbody = null;
+    }
+    return tbody;
   }
 }
 
