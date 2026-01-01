@@ -1,8 +1,8 @@
 import {SvgPlus} from "../SvgPlus/4.js"
-import {initializeApp} from 'https://www.gstatic.com/firebasejs/9.2.0/firebase-app.js'
-import {getAuth, signInWithRedirect, GoogleAuthProvider, onAuthStateChanged} from 'https://www.gstatic.com/firebasejs/9.2.0/firebase-auth.js'
-import {getDatabase, child, push, ref, update, get, onValue, onChildAdded, onChildChanged, onChildRemoved, set} from 'https://www.gstatic.com/firebasejs/9.2.0/firebase-database.js'
-
+// import {initializeApp} from 'https://www.gstatic.com/firebasejs/9.2.0/firebase-app.js'
+// import {getAuth, signInWithRedirect, GoogleAuthProvider, onAuthStateChanged} from 'https://www.gstatic.com/firebasejs/9.2.0/firebase-auth.js'
+// import {getDatabase, child, push, ref, update, get, onValue, onChildAdded, onChildChanged, onChildRemoved, set} from 'https://www.gstatic.com/firebasejs/9.2.0/firebase-database.js'
+import * as FB from "./firebase-client.js"
 
 let APP = null;
 let DB = null;
@@ -34,18 +34,18 @@ class FireUser extends SvgPlus {
 
     let config = this.getAttribute("config");
     config = JSON.parse(config);
-
-    APP = initializeApp(config);
-    DB = getDatabase(APP);
-    AUTH = getAuth();
-
-    onAuthStateChanged(AUTH, (userData) => {
+    
+    FB.addAuthChangeListener((userData) => {
+      console.log(userData);
       if (userData == null) {
         this._onleave(userData);
       } else {
         this._onuser(userData);
       }
     });
+
+    FB.initialise(config);
+
   }
 
   async fade(value, time = 300){
@@ -91,13 +91,12 @@ class FireUser extends SvgPlus {
   }
 
   signIn(){
-    const provider = new GoogleAuthProvider();
-    signInWithRedirect(AUTH, provider);
-
+    const provider = new FB.GoogleAuthProvider();
+    FB.signInWithPopup(provider);
   }
 
   signOut(){
-    AUTH.signOut();
+    FB.signOut();
   }
 
   set "users-ref"(value){
@@ -105,7 +104,7 @@ class FireUser extends SvgPlus {
   }
 
   get database(){
-    return DB;
+    return FB.getDatabase();
   }
 
   get uid(){
@@ -113,40 +112,40 @@ class FireUser extends SvgPlus {
   }
 
   get userRef(){
-    return ref(DB, this._users_ref + this.uid)
+    return FB.ref(this._users_ref + this.uid)
   }
 
   push(value) {
-    return push(this.child(value));
+    return FB.push(this.child(value));
   }
 
   child(value){
-    return child(this.userRef, value)
+    return FB.child(this.userRef, value)
   }
 
   get(value){
-    return get(this.child(value));
+    return FB.get(this.child(value));
   }
   update(value, data){
-    return update(this.child(value), data)
+    return FB.update(this.child(value), data)
   }
   set(value, data){
-    return set(this.child(value), data)
+    return FB.set(this.child(value), data)
   }
   onChildChanged(value, callback){
-    onChildChanged(this.child(value), callback);
+    FB.onChildChanged(this.child(value), callback);
   }
   onChildAdded(value, callback){
-    onChildAdded(this.child(value), callback);
+    FB.onChildAdded(this.child(value), callback);
   }
   onChildRemoved(value, callback){
-    onChildRemoved(this.child(value), callback);
+    FB.onChildRemoved(this.child(value), callback);
   }
   onValue(value, callback){
-    onValue(this.child(value), callback);
+    FB.onValue(this.child(value), callback);
   }
 }
 
 SvgPlus.defineHTMLElement(FireUser);
 
-export {DB, child, push, ref, update, get, onChildAdded, onChildChanged, onChildRemoved, set}
+// export {DB, child, push, ref, update, get, onChildAdded, onChildChanged, onChildRemoved, set}
