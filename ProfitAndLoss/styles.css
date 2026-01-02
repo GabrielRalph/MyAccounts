@@ -124,9 +124,6 @@ h1 {
   font-size: var(--header-font-size)
 }
 
-.pl-table .subtotal  {
-  /* --indent: calc((2em * (var(--depth) + 0.5))); */
-}
 
 .pl-table .subtotal td {
   font-weight: bold;
