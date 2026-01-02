@@ -1,4 +1,4 @@
-import {addProps} from "../SvgPlus/props.js"
+import {addProps} from "../Utilities/props.js"
 
 const YearsMS = (1000 * 60 * 60 * 24 * 365);
 const AccountTypes = {
@@ -127,12 +127,21 @@ function getTime(value, def = null){
   return value;
 }
 
-function mF(money, round = 2) {
-  if (Number.isNaN(money) || !money) {
-    return "-"
+/**
+ * Formats a monetary value.
+ * @param {number} money - The monetary value to format.
+ * @param {number} [round=2] - The number of decimal places to round to.
+ * @returns {string} The formatted monetary value as a string.
+ */
+function mF(money, round = 2, showDollar = false) {
+  let value = "-";
+  if (!Number.isNaN(money) && money !== 0) {
+    let isNeg = money < 0;
+    let str = Math.abs(money).toFixed(round);
+    let dolar = showDollar ? "$" : "";
+    value = isNeg ? `(${dolar}${str})` : `${dolar}${str}`;
   }
-  let fac = Math.pow(10, round)
-  return "$" + Math.round(money*fac)/fac;
+  return value;
 }
 
 function dF(date){

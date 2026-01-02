@@ -1,12 +1,5 @@
 import {SvgPlus} from "../SvgPlus/4.js"
-// import {initializeApp} from 'https://www.gstatic.com/firebasejs/9.2.0/firebase-app.js'
-// import {getAuth, signInWithRedirect, GoogleAuthProvider, onAuthStateChanged} from 'https://www.gstatic.com/firebasejs/9.2.0/firebase-auth.js'
-// import {getDatabase, child, push, ref, update, get, onValue, onChildAdded, onChildChanged, onChildRemoved, set} from 'https://www.gstatic.com/firebasejs/9.2.0/firebase-database.js'
 import * as FB from "./firebase-client.js"
-
-let APP = null;
-let DB = null;
-let AUTH = null;
 
 let fireUser = null;
 class FireUser extends SvgPlus {
@@ -124,6 +117,7 @@ class FireUser extends SvgPlus {
   }
 
   get(value){
+      console.log(this.child(value));
     return FB.get(this.child(value));
   }
   update(value, data){
@@ -143,6 +137,10 @@ class FireUser extends SvgPlus {
   }
   onValue(value, callback){
     FB.onValue(this.child(value), callback);
+  }
+
+  static get observedAttributes() {
+    return ["users-ref"];
   }
 }
 

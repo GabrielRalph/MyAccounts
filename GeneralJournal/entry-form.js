@@ -1,12 +1,14 @@
 import {SvgPlus} from "../SvgPlus/4.js"
-import {} from "../SvgPlus/input-plus.js"
-import {Icon} from "../SvgPlus/Icons.js"
-import {TBody, Tr, Td} from "../SvgPlus/Table.js"
-import {makeProps} from "../SvgPlus/props.js"
+import { InputPlus } from "../Utilities/input-plus.js"
+import {Icon} from "../Utilities/Icons.js"
+import {TBody, Tr, Td} from "../Utilities/Table.js"
+import {makeProps} from "../Utilities/props.js"
 import {EntryProps, dF} from "../gj.js"
 
 const SuggestionCats = {
-  "description": "names"
+  "description": "names",
+  "debit-acc": "accounts",
+  "credit-acc": "accounts"
 }
 function getSS (val) {
   let res = ""
@@ -139,21 +141,19 @@ class EntryForm extends SvgPlus{
 
     let inputs = {};
     let r = 0;
-    let original = this.original;
-    let last = null;
     for (let row of this.layout) {
       let c = 0;
       for (let elem of row) {
-
         let type = EntryProps[elem].type;
-        let input = body[r][c].createChild("input-plus", {
+        let input = body[r][c].createChild(InputPlus, {
+          events: {
+            change: this.change.bind(this)
+          }
+        }, {
           type: type,
           placeholder: elem,
           "suggestion-category": getSS(elem)
         });
-        input.addEventListener("change", (nv) => {
-          this.change();
-        })
         inputs[elem] = input;
         c++;
       }

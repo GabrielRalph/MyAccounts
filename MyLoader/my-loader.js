@@ -1,4 +1,5 @@
-import {SvgPlus, SvgPath, Vector} from "../SvgPlus/4.js"
+import {SvgPlus, Vector} from "../SvgPlus/4.js"
+import {SvgPath} from "../SvgPlus/svg-path.js"
 
 function love_x(theta, rad = 1) {
   return rad * 16 * Math.pow(Math.sin(theta), 3)

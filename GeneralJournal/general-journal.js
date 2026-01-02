@@ -1,6 +1,6 @@
 import {SvgPlus} from "../SvgPlus/4.js"
-import {TBody, Tr, Td} from "../SvgPlus/Table.js"
-import {makeProps} from "../SvgPlus/props.js"
+import {TBody, Tr, Td} from "../Utilities/Table.js"
+import {makeProps} from "../Utilities/props.js"
 import {EntryProps, dF, mF} from "../gj.js"
 
 class JournalEntry extends TBody{

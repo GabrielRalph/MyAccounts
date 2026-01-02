@@ -1,5 +1,35 @@
+body {
+  --width: min(250mm, 95vw);
+  --mm: calc(var(--width) / 210);
+  --fs: calc(4 * var(--mm));
+
+  background-color: rgb(51, 50, 49);
+  font-family: 'Cutive Mono', monospace;
+  font-size: var(--fs);
+}
+
+.page {
+  --padding: 10;
+  width: var(--width);
+  height: calc(297 * var(--mm));
+  padding: calc(var(--padding) * var(--mm));
+  margin: auto;
+  box-sizing: border-box;
+  background-color: white;
+  border-radius: 3px;
+}
+
+.user-bar {
+  width: var(--width);
+  margin: 1em auto;
+  padding: 0.3em;
+  border-radius: 3px;
+  background-color: white;
+  box-sizing: border-box;
+
+}
 user-details {
-  margin-bottom: 3em;
+  margin-bottom: 0.5em;
   display: block;
 }
 
@@ -12,17 +42,16 @@ user-details {
   width: calc(100% - 2 * 0.25em);
 }
 
-table {
-  counter-reset: tcat;
-}
-tbody tr:last-of-type td:nth-last-of-type(3n){
+
+/* 
+tbody.category tr:last-of-type td:nth-last-of-type(3n){
   text-align: right;
 }
 
 tbody tr:last-of-type td:last-of-type::before {
   counter-increment: tcat;
   content: "(" counter(tcat, upper-alpha) ")";
-}
+} */
 
 input-plus.left .placeholder {
   text-align: right;
@@ -46,11 +75,11 @@ input-plus.left > div {
 input-plus.right > div {
   margin-top: 0;
 }
+/* 
+table {
+  counter-reset: tcat;
+} */
 
-profit-and-loss table {
-  border-collapse: collapse;
-  width: 100%;
-}
 
 profit-and-loss .head {
   text-align: center;
@@ -60,26 +89,94 @@ profit-and-loss .head span{
   padding: 0 0.5em;
 }
 
-profit-and-loss thead tr:first-of-type {
-  font-size: 1em;
-}
-profit-and-loss thead tr:last-of-type td {
-  padding-bottom: 1em;
+h1 {
+  margin: 0;
 }
 
-profit-and-loss tbody td:nth-of-type(n+2) {
-  padding-left: 1em;
+
+.pl-table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.8em;
 }
 
-profit-and-loss tbody td:last-of-type {
-  text-align: right;
+
+.pl-table tbody tbody {
+  display: contents;
+}
+.pl-table tr{
+  --indent: calc((2em * var(--depth)));
+  --border-color: hsl(0, 0%, calc(30% * var(--depth)));
+  --border-width: 1px;
+  --border: solid var(--border-width) var(--border-color);
+  --header-font-size: max(1em, calc(1.3em - 0.1em * var(--depth)));
+  --subtotal-font-size: max(1em, calc(1.25em - 0.1em * var(--depth)));
 }
 
-profit-and-loss tbody tr:last-of-type td{
-  padding-bottom:0.5em;
-  border-bottom: 1px solid black;
+.pl-table td {
+  padding: 0.2em 0;
+  vertical-align: bottom;
 }
 
-profit-and-loss tbody:nth-of-type(n+2) tr:first-of-type td{
-  padding-top:0.5em;
+.pl-table th {
+  text-align: left;
+  padding-top: 1rem;
+  font-size: var(--header-font-size)
+}
+
+.pl-table .subtotal  {
+  /* --indent: calc((2em * (var(--depth) + 0.5))); */
+}
+
+.pl-table .subtotal td {
+  font-weight: bold;
+}
+.pl-table .subtotal *:first-child {
+  font-size: var(--subtotal-font-size);
+}
+
+.pl-table tr td:first-of-type,
+.pl-table tr th:first-of-type {
+  padding-left: var(--indent);
+  text-align: left;
+  position: relative;
+  border-bottom: solid transparent var(--border-width);
+}
+
+.pl-table tr td:first-of-type::after,
+.pl-table tr th:first-of-type::after {
+  content: " ";
+  position: absolute;
+  left: var(--indent);
+  right: 0;
+  bottom: calc(-1 * var(--border-width));
+  height: var(--border-width);
+  background: var(--border-color);
+}
+
+.pl-table tr td:nth-of-type(n+2),
+.pl-table tr th:nth-of-type(n+2) {
+  border-bottom: var(--border);
+}
+
+
+@media print {
+  body {
+    margin: 0;
+    background-color: white;
+    --width: 210mm;
+    --mm: 1mm;
+    --fs: 4mm;
+    font-size: 4mm;
+  }
+  .page {
+    width: 210mm;
+    height: 297mm;
+    padding: 10mm;
+  }
+  
+}
+@page {
+  size: A4;
+  margin: 0;
 }

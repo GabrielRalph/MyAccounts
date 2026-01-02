@@ -1,5 +1,5 @@
 import {SvgPlus} from "../SvgPlus/4.js"
-import {Types} from "../SvgPlus/props.js"
+import {Types} from "./props.js"
 
 function dF(date){
   if (date == -1) return "";
@@ -12,8 +12,17 @@ function dF(date){
 class InputPlus extends SvgPlus{
   _type = "string";
   _suggestion_category = null;
-  constructor(el){
-    super(el);
+  constructor(options){
+    super("input-plus");
+    this.onconnect();
+    if (options){
+      console.log(options);
+      for (let key in options){
+        if (key in this){
+          this[key] = options[key];
+        }
+      }
+    }
   }
 
   onconnect(){
@@ -29,79 +38,73 @@ class InputPlus extends SvgPlus{
     this._placeholder_text = this._placeholder.createChild("span", {content: this.placeholder});
     this._placeholder_result = this._placeholder.createChild("span", {content: this.result});
     this._suggestion = rel.createChild("div", {class: "suggestion", content: this.suggestion});
-    let input = rel.createChild("input");
-    this._rel = rel;
-    this._input = input;
-    this._created = true;
-    this.value = value || this._value;
-
-    if (value.length > 0) {
-      this.setPhF(1)
-    }
-
-    this._input.addEventListener("focusin", () => {
-      this._focusin();
-    })
-    this._input.addEventListener("focusout", () => {
-      this._focusout();
-    })
-
-    this._input.addEventListener("keyup", (event) => {
-      this._afterChange()
-    });
-
     let meta = false;
-    this._input.addEventListener("keydown", (event) => {
-      let key = event.key;
-      let v = this.value;
-      let s = input.selectionStart;
-      let e = input.selectionEnd;
-      let nv = v;
-      if (!meta) {
-        if (key.length == 1) {
-          if (v.length > 0) {
-            nv = v.substring(0, s) + key + v.substring(e);
-          } else {
-            nv = key;
-          }
-        } else {
-          meta = key == "Meta";
-          if (key == "Backspace") {
+    let input = rel.createChild("input", {events: {
+      focusin: this._focusin.bind(this),
+      focusout: this._focusout.bind(this),
+      keyup: this._afterChange.bind(this),
+      keydown: (event) => {
+        let key = event.key;
+        let v = this.value;
+        let s = input.selectionStart;
+        let e = input.selectionEnd;
+        let nv = v;
+        if (!meta) {
+          if (key.length == 1) {
             if (v.length > 0) {
-              if (s == e) {
-                nv = v.substring(0, s-1) + v.substring(e);
-              } else {
-                nv = v.substring(0, s) + v.substring(e);
+              nv = v.substring(0, s) + key + v.substring(e);
+            } else {
+              nv = key;
+            }
+          } else {
+            meta = key == "Meta";
+            if (key == "Backspace") {
+              if (v.length > 0) {
+                if (s == e) {
+                  nv = v.substring(0, s-1) + v.substring(e);
+                } else {
+                  nv = v.substring(0, s) + v.substring(e);
+                }
+              }
+            } else if (key == "Tab") {
+              if (this.suggestion.length > 0) {
+                this.value = this.suggestion;
+                this.suggestion = "";
               }
             }
           }
         }
+        if (!this._beforeChange(nv)) {
+          event.preventDefault();
+        }
+      },
+      paste: (event) => {
+        let data = event.clipboardData.getData('text/plain');
+        let s = input.selectionStart;
+        let e = input.selectionEnd;
+        let v = this.value;
+        let nv = v.substring(0, s) + data + v.substring(e);
+        if (!this._beforeChange(nv)) {
+          event.preventDefault();
+        }
+      },
+      cut: (event) => {
+        let s = input.selectionStart;
+        let e = input.selectionEnd;
+        let v = this.value;
+        let nv = v.substring(0, s) + v.substring(e);
+        if (!this._beforeChange(nv)) {
+          event.preventDefault();
+        }
       }
-      if (!this._beforeChange(nv)) {
-        event.preventDefault();
-      }
-    });
-
-    this._input.addEventListener("paste", (event) => {
-      let data = event.clipboardData.getData('text/plain');
-      let s = input.selectionStart;
-      let e = input.selectionEnd;
-      let v = this.value;
-      let nv = v.substring(0, s) + data + v.substring(e);
-      if (!this._beforeChange(nv)) {
-        event.preventDefault();
-      }
-    })
-
-    this._input.addEventListener("cut", (event) => {
-      let s = input.selectionStart;
-      let e = input.selectionEnd;
-      let v = this.value;
-      let nv = v.substring(0, s) + v.substring(e);
-      if (!this._beforeChange(nv)) {
-        event.preventDefault();
-      }
-    })
+    }});
+    this._rel = rel;
+    this._input = input;
+    this._created = true;
+    this.value = value || this._value;
+    if (value.length > 0) {
+      this.setPhF(1)
+    }
   }
 
   setPhF(value) {
@@ -164,6 +167,7 @@ class InputPlus extends SvgPlus{
     this.dispatchEvent(event);
   }
   _focusout() {
+      
     if (this.value.length == 0) {
       this.fadeOn = true;
       this.waveTransition((t) => {
@@ -181,7 +185,6 @@ class InputPlus extends SvgPlus{
       suggestion = document.suggestions.search(this.value, this.suggestion_category);
     } catch {}
     this.suggestion = suggestion;
-    console.log(suggestion);
   }
 
   set value(value){
@@ -210,6 +213,11 @@ class InputPlus extends SvgPlus{
   }
   get placeholder(){
     return this._placeholder_value ? this._placeholder_value : "";
+  }
+
+  set suggestion_category(value){
+    if (!value) value = null;
+    this._suggestion_category = value;
   }
 
   set ["suggestion-category"](value){
@@ -263,6 +271,5 @@ class InputPlus extends SvgPlus{
   }
 }
 
-SvgPlus.defineHTMLElement(InputPlus)
 
-export {}
+export {InputPlus}

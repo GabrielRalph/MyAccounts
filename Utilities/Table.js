@@ -1,4 +1,4 @@
-import {SvgPlus, SvgPath, Vector} from './4.js'
+import {SvgPlus} from '../SvgPlus/4.js';
 
 class Td extends SvgPlus{
   constructor(){

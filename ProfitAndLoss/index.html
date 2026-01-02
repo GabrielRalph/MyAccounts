@@ -12,7 +12,7 @@
     <script type = "module" src = "../Firebase/fire-user.js"></script>
     <script type = "module" src = "../Firebase/user-details.js"></script>
 
-    <link rel = "stylesheet" href = "../SvgPlus/input-plus.css"/>
+    <link rel = "stylesheet" href = "../Utilities/input-plus.css"/>
     <link rel = "stylesheet" href = "./styles.css"/>
     <script type = "module" src = "./profit-and-loss.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.5/jspdf.debug.js"></script>
@@ -53,10 +53,13 @@
             Sign out
           </div>
         </div>
-        <user-details fields = "dob crn abn tfn"></user-details>
-        <h1 style = "text-align: center">Profit and Loss</h1>
-        <profit-and-loss from = "6 oct 2021" to = "6 jan 2022">
-        </profit-and-loss>
+
+        <div class="page">
+          <user-details fields = "dob crn abn tfn"></user-details>
+          <h1 style = "text-align: center">Profit and Loss</h1>
+          <profit-and-loss from = "6 oct 2021" to = "6 jan 2022">
+          </profit-and-loss>
+        </div>
       </template>
 
       <template name = "config">
@@ -75,8 +78,8 @@
 
   <script>
     let fireAuth = document.querySelector("body > fire-user");
-    let profitAndLoss = () => {return document.querySelector("body > fire-user > div.user-frame > profit-and-loss")}
-    let userDetails = () => {return document.querySelector("body > fire-user > div.user-frame > user-details")}
+    let profitAndLoss = () => {return document.querySelector("profit-and-loss")}
+    let userDetails = () => {return document.querySelector("user-details")}
 
     fireAuth.addEventListener("leave", () => {
       fireAuth.loaded = true;
@@ -99,25 +102,6 @@
   </script>
 
   <style>
-    body {
-      font-family: 'Cutive Mono', monospace;
-      font-size: 1.5vw;
-      margin: 2em;
-      /* -webkit-text-size-adjust: 100%; */
-      /* text-size-adjust: 100%; */
-    }
-
-    @page {
-      margin: 0mm;
-    }
-
-    /* div {
-
-    } */
-
-    h1 {
-      margin-bottom: 1em;
-      margin-top: 0;
-    }
+    
   </style>
 </html>

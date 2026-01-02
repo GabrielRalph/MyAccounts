@@ -65,6 +65,9 @@ class UserDetails extends SvgPlus {
     }
   }
 
+  static get observedAttributes() {
+    return ["fields"];
+  }
 }
 
 SvgPlus.defineHTMLElement(UserDetails);

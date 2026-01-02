@@ -1,4 +1,4 @@
-import {SvgPlus, SvgPath, Vector} from "./4.js";
+import {SvgPlus} from "../SvgPlus/4.js";
 
 let Icons = {
   edit: `<path d="M99.84,20.75L40.2,80.4c0,0-6.65-1.74-12.83-7.92s-7.92-12.83-7.92-12.83L79.1,0c0,0,4.03,1.25,11.76,8.99S99.84,20.75,99.84,20.75z"/>
